@@ -6,7 +6,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Pagination } from '@/components/ui/Pagination';
 import { filterAndSortRecords } from '@/lib/filter-utils';
 import { SALARY_RECORDS } from '@/lib/mock-data';
-import { parseSearchParams } from '@/lib/utils';
+import { parseSearchParams, computeMedian, formatCurrency } from '@/lib/utils';
 import type { SalaryRecord } from '@/types/salary';
 import { buildSalaryPageMeta } from '@/lib/seo';
 
@@ -146,6 +146,48 @@ export default async function SalariesPage({
             {totalRecords === 1 ? '' : 's'} — covering popular roles such as{' '}
             {popularRoles}.
           </p>
+
+          {/* Dynamic metrics stats bar */}
+          <div className="flex flex-wrap gap-x-12 gap-y-4 mt-5 pt-5 border-t border-border/60">
+            <div>
+              <p className="text-[10px] font-bold text-neutral uppercase tracking-wider">
+                Matching Records
+              </p>
+              <p className="text-xl font-black text-airbnb mt-0.5">
+                {totalRecords}
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-neutral uppercase tracking-wider">
+                Median TC
+              </p>
+              <p className="text-xl font-black text-data-blue mt-0.5">
+                {totalRecords > 0
+                  ? formatCurrency(
+                      computeMedian(filtered.map((r) => r.total_compensation)),
+                      displayCurrency,
+                      displayCurrency,
+                      { compact: true }
+                    )
+                  : '—'}
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-neutral uppercase tracking-wider">
+                Highest TC
+              </p>
+              <p className="text-xl font-black text-airbnb mt-0.5">
+                {totalRecords > 0
+                  ? formatCurrency(
+                      Math.max(...filtered.map((r) => r.total_compensation)),
+                      displayCurrency,
+                      displayCurrency,
+                      { compact: true }
+                    )
+                  : '—'}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* FilterBar Wrapper */}

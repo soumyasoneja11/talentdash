@@ -21,6 +21,31 @@ const LEVEL_ORDER: LevelEnum[] = [
   'IC5',
 ];
 
+const getLevelVibrantBg = (level: LevelEnum): string => {
+  switch (level) {
+    case 'L3':
+    case 'SDE_I':
+      return 'bg-slate-400';
+    case 'L4':
+    case 'SDE_II':
+      return 'bg-blue-500';
+    case 'L5':
+    case 'SDE_III':
+      return 'bg-indigo-500';
+    case 'L6':
+    case 'STAFF':
+      return 'bg-purple-500';
+    case 'PRINCIPAL':
+      return 'bg-navy-800';
+    case 'IC4':
+      return 'bg-cyan-500';
+    case 'IC5':
+      return 'bg-teal-500';
+    default:
+      return 'bg-slate-400';
+  }
+};
+
 export const LevelDistributionBar = ({
   levelDistribution,
   totalRecords,
@@ -38,6 +63,7 @@ export const LevelDistributionBar = ({
       count,
       percentage,
       width,
+      bgSolid: getLevelVibrantBg(level),
       ...getLevelBadgeStyle(level),
     };
   });
@@ -52,11 +78,11 @@ export const LevelDistributionBar = ({
 
   return (
     <div className="w-full overflow-hidden">
-      <div className="flex h-4 w-full flex-row overflow-hidden rounded-full">
+      <div className="flex h-4 w-full flex-row overflow-hidden rounded-full bg-hover">
         {segments.map((segment) => (
           <div
             key={segment.level}
-            className={`h-full min-w-[2px] ${segment.bg}`}
+            className={`h-full min-w-[2px] ${segment.bgSolid}`}
             style={{ width: `${segment.width}%` }}
             title={`${segment.level}: ${segment.count} record${segment.count === 1 ? '' : 's'} (${segment.percentage}%)`}
           />
