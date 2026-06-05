@@ -1,11 +1,13 @@
 // RSC — React Server Component. No client-side JavaScript.
 import type { CurrencyEnum, SalaryRecord } from '@/types/salary';
 import { SalaryRow } from '@/components/features/SalaryRow';
+import Link from 'next/link';
 
 export interface SalaryTableProps {
   records: SalaryRecord[];
   displayCurrency: CurrencyEnum;
   currentSort: string;
+  searchParams?: Record<string, string | string[]>;
 }
 
 type SortHeader = {
@@ -41,10 +43,33 @@ const getSortDirection = (
 const getNextSort = (currentSort: string, key: string): string =>
   currentSort === `${key}_asc` ? `${key}_desc` : `${key}_asc`;
 
+const buildSortHref = (
+  nextSort: string,
+  searchParams?: Record<string, string | string[]>
+): string => {
+  if (!searchParams) {
+    return `?sort=${nextSort}`;
+  }
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (key === 'sort' || key === 'page') {
+      continue;
+    }
+    if (Array.isArray(value)) {
+      value.forEach((val) => params.append(key, val));
+    } else {
+      params.append(key, value);
+    }
+  }
+  params.set('sort', nextSort);
+  return `?${params.toString()}`;
+};
+
 export const SalaryTable = ({
   records,
   displayCurrency,
   currentSort,
+  searchParams,
 }: SalaryTableProps): React.ReactElement | null => {
   if (records.length === 0) {
     return null;
@@ -80,16 +105,16 @@ export const SalaryTable = ({
                   aria-sort={ariaSort}
                   className="sticky top-0 border-b border-border bg-surface py-3 px-4 text-left text-xs font-medium uppercase tracking-wide text-neutral whitespace-nowrap"
                 >
-                  <a
+                  <Link
                     className="inline-flex items-center gap-1"
-                    href={`?sort=${nextSort}`}
+                    href={buildSortHref(nextSort, searchParams)}
                     aria-label={`Sort by ${header.label} ${directionWord}`}
                   >
                     <span>{header.label}</span>
                     {indicator ? (
                       <span aria-hidden="true">{indicator}</span>
                     ) : null}
-                  </a>
+                  </Link>
                 </th>
               );
             })}

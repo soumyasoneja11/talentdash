@@ -165,6 +165,7 @@ export default async function SalariesPage({
           records={paginatedRecords}
           displayCurrency={displayCurrency}
           currentSort={sort}
+          searchParams={rawSearchParams}
         />
       )}
 
