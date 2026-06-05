@@ -35,17 +35,20 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <body className="min-h-screen bg-app-bg">
-        <nav className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-surface px-6">
-          <Link href="/" className="text-lg font-bold text-airbnb">
+        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex h-12 w-[min(800px,100%-2rem)] items-center justify-between border border-border/60 bg-surface/90 backdrop-blur-md px-6 rounded-full shadow-md shadow-neutral/5 transition-all">
+          <Link
+            href="/"
+            className="text-sm font-bold text-airbnb tracking-tight hover:opacity-80 transition-opacity"
+          >
             <span className="text-coral">T</span>alentDash
           </Link>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-soft-dark hover:text-airbnb"
+                className="text-xs font-semibold text-soft-dark hover:text-airbnb transition-colors"
               >
                 {link.label}
               </Link>
@@ -54,13 +57,13 @@ export default function RootLayout({
 
           <Link
             href="/submit"
-            className="rounded-lg bg-coral px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+            className="rounded-full bg-coral px-3.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-coral/10 hover:opacity-90 transition-opacity whitespace-nowrap"
           >
-            Submit Salary
+            Submit
           </Link>
         </nav>
 
-        <main className="min-h-screen pt-14">{children}</main>
+        <main className="min-h-screen pt-24">{children}</main>
       </body>
     </html>
   );

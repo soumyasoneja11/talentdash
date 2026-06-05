@@ -132,7 +132,7 @@ export const FilterBar = ({
   };
 
   return (
-    <div className="sticky top-0 z-10 border-b border-border bg-surface px-6 py-4 min-h-[72px]">
+    <div className="sticky top-20 z-10 border-b border-border bg-surface px-6 py-4 min-h-[72px]">
       <div className="flex flex-wrap items-center gap-4">
         <input
           type="text"

@@ -177,130 +177,140 @@ function ComparePageContent(): React.ReactElement {
         paramS2 === null));
 
   return (
-    <div className="space-y-6 bg-app-bg px-6 py-6">
-      {/* ---- Header + currency toggle ---- */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-airbnb">Compare Offers</h1>
+    <div className="bg-app-bg min-h-screen pb-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6 pt-6">
+        {/* ---- Header + currency toggle ---- */}
+        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-airbnb tracking-tight">
+              Compare Offers
+            </h1>
+            <p className="mt-1 text-xs text-neutral">
+              Compare two salary records side-by-side to analyze compensation
+              differences.
+            </p>
+          </div>
 
-        <div className="inline-flex overflow-hidden rounded-lg border border-border text-sm font-medium">
-          <button
-            type="button"
-            onClick={() => setDisplayCurrency('INR')}
-            aria-label="Show salaries in Indian Rupees"
-            className={`px-3 py-1.5 transition ${
-              displayCurrency === 'INR'
-                ? 'bg-coral text-white'
-                : 'bg-surface text-soft-dark hover:bg-hover'
-            }`}
-          >
-            ₹ INR
-          </button>
-          <button
-            type="button"
-            onClick={() => setDisplayCurrency('USD')}
-            aria-label="Show salaries in US Dollars"
-            className={`px-3 py-1.5 transition ${
-              displayCurrency === 'USD'
-                ? 'bg-coral text-white'
-                : 'bg-surface text-soft-dark hover:bg-hover'
-            }`}
-          >
-            $ USD
-          </button>
+          <div className="inline-flex overflow-hidden rounded-full border border-border text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setDisplayCurrency('INR')}
+              aria-label="Show salaries in Indian Rupees"
+              className={`px-3.5 py-1.5 transition-colors ${
+                displayCurrency === 'INR'
+                  ? 'bg-coral text-white'
+                  : 'bg-surface text-soft-dark hover:bg-hover'
+              }`}
+            >
+              ₹ INR
+            </button>
+            <button
+              type="button"
+              onClick={() => setDisplayCurrency('USD')}
+              aria-label="Show salaries in US Dollars"
+              className={`px-3.5 py-1.5 transition-colors ${
+                displayCurrency === 'USD'
+                  ? 'bg-coral text-white'
+                  : 'bg-surface text-soft-dark hover:bg-hover'
+              }`}
+            >
+              $ USD
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* ---- Company context banner (from company page "Compare" button) ---- */}
-      {showCompanyContext && (
-        <div className="rounded-lg border border-data-blue/30 bg-data-blue/5 px-4 py-3 text-sm text-soft-dark">
-          Comparing from{' '}
-          <span className="font-semibold text-airbnb">
-            {companyFromC1!.name}
-          </span>
-          . Change selection below.
-        </div>
-      )}
+        {/* ---- Company context banner (from company page "Compare" button) ---- */}
+        {showCompanyContext && (
+          <div className="rounded-2xl border border-data-blue/30 bg-data-blue/5 px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
+            Comparing from{' '}
+            <span className="text-coral">{companyFromC1!.name}</span>. Change
+            selection below.
+          </div>
+        )}
 
-      {/* ---- Invalid-ID banner ---- */}
-      {(invalidId1 || invalidId2) && (
-        <div className="rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-soft-dark">
-          Record not found. It may have been removed.
-        </div>
-      )}
+        {/* ---- Invalid-ID banner ---- */}
+        {(invalidId1 || invalidId2) && (
+          <div className="rounded-2xl border border-warning/40 bg-warning/10 px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
+            Record not found. It may have been removed.
+          </div>
+        )}
 
-      {/* ---- Selectors ---- */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div>
-          <label
-            htmlFor="compare-select-1"
-            className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-neutral"
-          >
-            Record 1
-          </label>
-          <select
-            id="compare-select-1"
-            value={record1?.id ?? ''}
-            onChange={handleSelect1}
-            className="w-full truncate rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-soft-dark shadow-sm transition focus:border-coral focus:outline-none focus:ring-1 focus:ring-coral"
-          >
-            <option value="" disabled>
-              Select a salary record…
-            </option>
-            {SALARY_RECORDS.map((record) => (
-              <option key={record.id} value={record.id}>
-                {buildOptionLabel(record)}
+        {/* ---- Selectors ---- */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+            <label
+              htmlFor="compare-select-1"
+              className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-neutral"
+            >
+              Record 1
+            </label>
+            <select
+              id="compare-select-1"
+              value={record1?.id ?? ''}
+              onChange={handleSelect1}
+              className="w-full truncate rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-soft-dark shadow-sm transition-colors focus:border-coral focus:outline-none focus:ring-1 focus:ring-coral"
+            >
+              <option value="" disabled>
+                Select a salary record…
               </option>
-            ))}
-          </select>
-        </div>
+              {SALARY_RECORDS.map((record) => (
+                <option key={record.id} value={record.id}>
+                  {buildOptionLabel(record)}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div>
-          <label
-            htmlFor="compare-select-2"
-            className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-neutral"
-          >
-            Record 2
-          </label>
-          <select
-            id="compare-select-2"
-            value={record2?.id ?? ''}
-            onChange={handleSelect2}
-            className="w-full truncate rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-soft-dark shadow-sm transition focus:border-coral focus:outline-none focus:ring-1 focus:ring-coral"
-          >
-            <option value="" disabled>
-              Select a salary record…
-            </option>
-            {SALARY_RECORDS.map((record) => (
-              <option key={record.id} value={record.id}>
-                {buildOptionLabel(record)}
+          <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+            <label
+              htmlFor="compare-select-2"
+              className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-neutral"
+            >
+              Record 2
+            </label>
+            <select
+              id="compare-select-2"
+              value={record2?.id ?? ''}
+              onChange={handleSelect2}
+              className="w-full truncate rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-soft-dark shadow-sm transition-colors focus:border-coral focus:outline-none focus:ring-1 focus:ring-coral"
+            >
+              <option value="" disabled>
+                Select a salary record…
               </option>
-            ))}
-          </select>
+              {SALARY_RECORDS.map((record) => (
+                <option key={record.id} value={record.id}>
+                  {buildOptionLabel(record)}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
 
-      {/* ---- Result area ---- */}
-      {isIdentical ? (
-        /* Edge case: same record selected in both slots */
-        <div className="rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-soft-dark">
-          You&apos;re comparing a record with itself. Please select two
-          different records.
-        </div>
-      ) : record1 && record2 ? (
-        <ComparisonTable
-          record1={record1}
-          record2={record2}
-          displayCurrency={displayCurrency}
-        />
-      ) : (
-        <div className="flex min-h-[200px] items-center justify-center rounded-xl border border-dashed border-border bg-surface">
-          <p className="text-sm text-neutral">
-            {record1 || record2
-              ? 'Select a second record to compare'
-              : 'Select two salary records to compare'}
-          </p>
-        </div>
-      )}
+        {/* ---- Result area ---- */}
+        {isIdentical ? (
+          /* Edge case: same record selected in both slots */
+          <div className="rounded-2xl border border-warning/40 bg-warning/10 px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
+            You&apos;re comparing a record with itself. Please select two
+            different records.
+          </div>
+        ) : record1 && record2 ? (
+          <div className="rounded-2xl border border-border bg-surface shadow-sm overflow-hidden">
+            <ComparisonTable
+              record1={record1}
+              record2={record2}
+              displayCurrency={displayCurrency}
+            />
+          </div>
+        ) : (
+          <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-dashed border-border bg-surface shadow-sm">
+            <p className="text-xs font-semibold text-neutral">
+              {record1 || record2
+                ? 'Select a second record to compare'
+                : 'Select two salary records to compare'}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

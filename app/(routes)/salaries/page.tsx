@@ -129,54 +129,63 @@ export default async function SalariesPage({
   const popularRoles = formatRoleList(getPopularRoles(SALARY_RECORDS));
 
   return (
-    <div className="bg-surface">
+    <div className="bg-app-bg min-h-screen pb-12">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
       />
 
-      <div className="border-b border-border px-6 py-6">
-        <h1 className="text-2xl font-bold text-airbnb">
-          Tech Salary Data in India
-        </h1>
-        <p className="mt-2 text-sm text-neutral">
-          {totalRecords.toLocaleString('en-IN')} compensation record
-          {totalRecords === 1 ? '' : 's'} — covering popular roles such as{' '}
-          {popularRoles}.
-        </p>
-      </div>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6 pt-6">
+        {/* Header Section */}
+        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+          <h1 className="text-2xl font-bold text-airbnb tracking-tight">
+            Tech Salary Data in India
+          </h1>
+          <p className="mt-2 text-sm text-neutral">
+            {totalRecords.toLocaleString('en-IN')} compensation record
+            {totalRecords === 1 ? '' : 's'} — covering popular roles such as{' '}
+            {popularRoles}.
+          </p>
+        </div>
 
-      <FilterBar
-        initialFilters={filters}
-        companies={companies}
-        roles={roles}
-        locations={locations}
-      />
-
-      {paginatedRecords.length === 0 ? (
-        <div className="px-6 py-8">
-          <EmptyState
-            message="No records found for these filters."
-            clearLink="/salaries"
+        {/* FilterBar Wrapper */}
+        <div className="rounded-2xl border border-border bg-surface shadow-sm overflow-hidden">
+          <FilterBar
+            initialFilters={filters}
+            companies={companies}
+            roles={roles}
+            locations={locations}
           />
         </div>
-      ) : (
-        <SalaryTable
-          records={paginatedRecords}
-          displayCurrency={displayCurrency}
-          currentSort={sort}
-          searchParams={rawSearchParams}
-        />
-      )}
 
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        totalRecords={totalRecords}
-        pageSize={PAGE_SIZE}
-        basePath="/salaries"
-        searchParams={rawSearchParams}
-      />
+        {/* Table/Results Wrapper */}
+        <div className="rounded-2xl border border-border bg-surface shadow-sm overflow-hidden">
+          {paginatedRecords.length === 0 ? (
+            <div className="px-6 py-8">
+              <EmptyState
+                message="No records found for these filters."
+                clearLink="/salaries"
+              />
+            </div>
+          ) : (
+            <SalaryTable
+              records={paginatedRecords}
+              displayCurrency={displayCurrency}
+              currentSort={sort}
+              searchParams={rawSearchParams}
+            />
+          )}
+
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalRecords={totalRecords}
+            pageSize={PAGE_SIZE}
+            basePath="/salaries"
+            searchParams={rawSearchParams}
+          />
+        </div>
+      </div>
     </div>
   );
 }

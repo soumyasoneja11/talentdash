@@ -158,7 +158,7 @@ export default async function CompanyPage({
   const breadcrumbJsonLd = buildBreadcrumbJsonLd(company);
 
   return (
-    <div className="space-y-6 bg-app-bg px-6 py-6">
+    <div className="bg-app-bg min-h-screen pb-12">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -168,68 +168,88 @@ export default async function CompanyPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <nav aria-label="Breadcrumb" className="text-sm text-neutral">
-        <ol className="flex flex-wrap items-center gap-1">
-          <li>
-            <Link href="/" className="hover:text-airbnb">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">&gt;</li>
-          <li>
-            <Link href="/companies" className="hover:text-airbnb">
-              Companies
-            </Link>
-          </li>
-          <li aria-hidden="true">&gt;</li>
-          <li className="text-soft-dark" aria-current="page">
-            {company.name}
-          </li>
-        </ol>
-      </nav>
-
-      <CompanyHeader company={company} recordCount={stats.record_count} />
-
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-airbnb">
-          Compensation Overview
-        </h2>
-        <CompanyStats stats={stats} currency={displayCurrency} />
-      </section>
-
-      <section className="rounded-xl border border-border bg-surface p-6">
-        <h2 className="mb-4 text-lg font-semibold text-airbnb">
-          Level Distribution
-        </h2>
-        <LevelDistributionBar
-          levelDistribution={stats.level_distribution}
-          totalRecords={stats.record_count}
-        />
-      </section>
-
-      <section className="overflow-x-auto rounded-xl border border-border bg-surface p-6">
-        <h2 className="mb-4 text-lg font-semibold text-airbnb">
-          Salary Records
-        </h2>
-        {sortedRecords.length === 0 ? (
-          <EmptyState message="No records found for this company." />
-        ) : (
-          <SalaryTable
-            records={sortedRecords}
-            displayCurrency={displayCurrency}
-            currentSort="tc_desc"
-          />
-        )}
-      </section>
-
-      <nav className="flex justify-center pb-2">
-        <Link
-          href="/salaries"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-coral transition hover:underline"
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6 pt-6">
+        {/* Breadcrumb */}
+        <nav
+          aria-label="Breadcrumb"
+          className="text-xs font-semibold text-neutral px-1"
         >
-          ← Back to all salaries
-        </Link>
-      </nav>
+          <ol className="flex flex-wrap items-center gap-1">
+            <li>
+              <Link href="/" className="hover:text-airbnb transition-colors">
+                Home
+              </Link>
+            </li>
+            <li aria-hidden="true" className="text-neutral/60">
+              &gt;
+            </li>
+            <li>
+              <Link
+                href="/companies"
+                className="hover:text-airbnb transition-colors"
+              >
+                Companies
+              </Link>
+            </li>
+            <li aria-hidden="true" className="text-neutral/60">
+              &gt;
+            </li>
+            <li className="text-soft-dark" aria-current="page">
+              {company.name}
+            </li>
+          </ol>
+        </nav>
+
+        {/* Company Header */}
+        <div className="rounded-2xl border border-border bg-surface shadow-sm overflow-hidden">
+          <CompanyHeader company={company} recordCount={stats.record_count} />
+        </div>
+
+        {/* Compensation Overview Section */}
+        <section className="rounded-2xl border border-border bg-surface p-6 shadow-sm space-y-4">
+          <h2 className="text-lg font-bold text-airbnb tracking-tight">
+            Compensation Overview
+          </h2>
+          <CompanyStats stats={stats} currency={displayCurrency} />
+        </section>
+
+        {/* Level Distribution Section */}
+        <section className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-bold text-airbnb tracking-tight">
+            Level Distribution
+          </h2>
+          <LevelDistributionBar
+            levelDistribution={stats.level_distribution}
+            totalRecords={stats.record_count}
+          />
+        </section>
+
+        {/* Salary Records Section */}
+        <section className="overflow-x-auto rounded-2xl border border-border bg-surface p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-bold text-airbnb tracking-tight">
+            Salary Records
+          </h2>
+          {sortedRecords.length === 0 ? (
+            <EmptyState message="No records found for this company." />
+          ) : (
+            <SalaryTable
+              records={sortedRecords}
+              displayCurrency={displayCurrency}
+              currentSort="tc_desc"
+            />
+          )}
+        </section>
+
+        {/* Back Link */}
+        <nav className="flex justify-center pt-2">
+          <Link
+            href="/salaries"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-coral transition hover:underline"
+          >
+            ← Back to all salaries
+          </Link>
+        </nav>
+      </div>
     </div>
   );
 }
