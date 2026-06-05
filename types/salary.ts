@@ -59,7 +59,7 @@ export interface SalaryFilters {
   level?: LevelEnum[];
   location?: string;
   currency?: CurrencyEnum;
-  sort?: 'tc_desc' | 'tc_asc' | 'date_desc';
+  sort?: string;
   page?: number;
   limit?: number;
 }

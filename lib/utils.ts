@@ -259,7 +259,14 @@ export const parseSearchParams = (
   ) {
     filters.currency = currency;
   }
-  if (sort === 'tc_desc' || sort === 'tc_asc' || sort === 'date_desc') {
+  if (
+    sort &&
+    (/^(company|role|level|location|experience|base|bonus|stock|tc)_(asc|desc)$/.test(
+      sort
+    ) ||
+      sort === 'date_desc' ||
+      sort === 'date_asc')
+  ) {
     filters.sort = sort;
   }
   if (page) {

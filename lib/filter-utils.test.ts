@@ -254,4 +254,28 @@ import type { LevelEnum } from '../types/salary';
   }
 }
 
+// 4. COLUMN SORTING tests
+{
+  const resultCompany = filterAndSortRecords(SALARY_RECORDS, {
+    sort: 'company_asc',
+  });
+  for (let index = 1; index < resultCompany.length; index += 1) {
+    const prev = resultCompany[index - 1].company_display.toLowerCase();
+    const curr = resultCompany[index].company_display.toLowerCase();
+    assert.ok(prev <= curr, `expected company_asc order: ${prev} <= ${curr}`);
+  }
+
+  const resultExperience = filterAndSortRecords(SALARY_RECORDS, {
+    sort: 'experience_desc',
+  });
+  for (let index = 1; index < resultExperience.length; index += 1) {
+    const prev = resultExperience[index - 1].experience_years;
+    const curr = resultExperience[index].experience_years;
+    assert.ok(
+      prev >= curr,
+      `expected experience_desc order: ${prev} >= ${curr}`
+    );
+  }
+}
+
 console.log('All filter-utils and SEO tests passed.');
