@@ -35,12 +35,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <body className="min-h-screen bg-app-bg">
-        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex h-12 w-[min(800px,100%-2rem)] items-center justify-between border border-border/60 bg-surface/90 backdrop-blur-md px-6 rounded-full shadow-md shadow-neutral/5 transition-all">
+        <nav className="animate-fade-in fixed top-4 left-1/2 -translate-x-1/2 z-50 flex h-12 w-[min(800px,100%-2rem)] items-center justify-between border border-teal-brand/20 bg-surface/95 backdrop-blur-md px-6 rounded-full shadow-md shadow-neutral/5 transition-all">
           <Link
             href="/"
             className="text-sm font-bold text-airbnb tracking-tight hover:opacity-80 transition-opacity"
           >
-            <span className="text-coral">T</span>alentDash
+            <span className="text-teal-brand">T</span>alentDash
           </Link>
 
           <div className="flex items-center gap-5">
@@ -48,7 +48,7 @@ export default function RootLayout({
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs font-semibold text-soft-dark hover:text-airbnb transition-colors"
+                className="animated-link text-xs font-semibold text-soft-dark hover:text-airbnb transition-colors duration-200"
               >
                 {link.label}
               </Link>
@@ -57,13 +57,34 @@ export default function RootLayout({
 
           <Link
             href="/submit"
-            className="rounded-full bg-coral px-3.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-coral/10 hover:opacity-90 transition-opacity whitespace-nowrap"
+            className="rounded-full bg-teal-brand px-3.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-teal-brand/20 hover:bg-deep-teal transition-colors duration-200 whitespace-nowrap"
           >
             Submit
           </Link>
         </nav>
 
         <main className="min-h-screen pt-24">{children}</main>
+
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            var io = new IntersectionObserver(function(entries) {
+              entries.forEach(function(e) {
+                if (e.isIntersecting) {
+                  e.target.classList.add('revealed');
+                  io.unobserve(e.target);
+                }
+              });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+            function observe() {
+              document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
+            }
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', observe);
+            } else {
+              observe();
+            }
+          })();
+        ` }} />
       </body>
     </html>
   );

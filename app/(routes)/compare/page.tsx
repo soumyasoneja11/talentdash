@@ -5,31 +5,6 @@
  * ===================================================================
  * COMPARE PAGE — User Journey
  * ===================================================================
- *
- * Full flow from company page → compare page:
- *
- *  1. User visits  /companies/amazon
- *  2. Clicks the "Compare" button
- *  3. Navigates to  /compare?c1=amazon
- *  4. This page reads the `c1` param, finds all salary records where
- *     company_slug === "amazon", and auto-selects the one with the
- *     HIGHEST total_compensation as the initial selection for slot 1.
- *     (UX decision: the highest-TC record is the most "interesting"
- *     default — users comparing offers typically benchmark against
- *     the best-case scenario at a given company.)
- *  5. The URL is immediately rewritten to  /compare?s1=<record_id>
- *     so that the `c1` param is consumed and replaced with an
- *     explicit record reference. This keeps the URL canonical.
- *  6. User selects any second record in slot 2.
- *  7. Comparison table renders; URL updates to
- *     /compare?s1=<id>&s2=<other_id>
- *  8. This final URL is shareable and loads the exact comparison.
- *
- * Direct access paths also work:
- *   - /compare              → empty state, user picks both records
- *   - /compare?s1=X&s2=Y    → pre-loaded comparison
- *   - /compare?c1=google    → auto-selects Google's top record
- * ===================================================================
  */
 
 import {
@@ -51,13 +26,17 @@ import type { SalaryRecord } from '@/types/salary';
 /* ------------------------------------------------------------------ */
 
 /** Build an option label in the format the spec requires. */
-const buildOptionLabel = (record: SalaryRecord): string => {
+const buildOptionLabel = (
+  record: SalaryRecord,
+  displayCurrency: 'INR' | 'USD'
+): string => {
   const tc = formatCurrency(
     record.total_compensation,
     record.currency,
-    record.currency
+    displayCurrency,
+    { compact: true }
   );
-  return `${record.company_display} — ${record.role} — ${record.level_standardized} — ${record.location} — ${tc}`;
+  return `${record.company_display} — ${record.role} — ${record.level_standardized} — ${tc}`;
 };
 
 /**
@@ -90,10 +69,6 @@ function ComparePageContent(): React.ReactElement {
   );
 
   // --- c1 → s1 promotion ----------------------------------------- //
-  // When the user arrives from a company page with ?c1=<slug>, we
-  // auto-select the highest-TC record from that company and rewrite
-  // the URL to use the canonical ?s1=<id> form. This only fires once,
-  // on the initial mount when c1 is present and s1 is not.
   const c1Handled = useRef(false);
   const companyFromC1 = paramC1 ? getCompanyBySlug(paramC1) : null;
 
@@ -138,14 +113,13 @@ function ComparePageContent(): React.ReactElement {
   const updateUrl = useCallback(
     (slot: 's1' | 's2', id: string | null) => {
       const params = new URLSearchParams(searchParams.toString());
-      // Always clean up c1 when the user explicitly changes a selection
       params.delete('c1');
       if (id) {
         params.set(slot, id);
       } else {
         params.delete(slot);
       }
-      router.push(`/compare?${params.toString()}`);
+      router.push(`/compare?${params.toString()}`, { scroll: false });
     },
     [searchParams, router]
   );
@@ -164,10 +138,18 @@ function ComparePageContent(): React.ReactElement {
     [updateUrl]
   );
 
+  // --- Clipboard share functionality ------------------------------ //
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+  };
+
   // --- Contextual banner when arriving from a company page -------- //
-  // We show this while c1 is still in the URL (before the effect
-  // rewrites it), OR when s1 was just set by the c1 promotion and
-  // the record belongs to the company the user came from.
   const showCompanyContext =
     companyFromC1 !== null &&
     companyFromC1 !== undefined &&
@@ -177,26 +159,26 @@ function ComparePageContent(): React.ReactElement {
         paramS2 === null));
 
   return (
-    <div className="bg-app-bg min-h-screen pb-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6 pt-6">
-        {/* ---- Header + currency toggle ---- */}
-        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm flex flex-wrap items-center justify-between gap-4">
+    <div className="bg-app-bg min-h-screen py-8">
+      <div className="mx-auto max-w-4xl px-4 space-y-6">
+        
+        {/* ---- Title + Currency Toggle Row ---- */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-airbnb tracking-tight">
-              Compare Offers
+              Compare Salary Records
             </h1>
-            <p className="mt-1 text-xs text-neutral">
-              Compare two salary records side-by-side to analyze compensation
-              differences.
+            <p className="mt-1 text-sm text-neutral">
+              Select any two records from the salary database to compare compensation side-by-side.
             </p>
           </div>
 
-          <div className="inline-flex overflow-hidden rounded-full border border-border text-xs font-semibold">
+          <div className="inline-flex overflow-hidden rounded-full border border-border text-xs font-semibold shrink-0 shadow-sm">
             <button
               type="button"
               onClick={() => setDisplayCurrency('INR')}
               aria-label="Show salaries in Indian Rupees"
-              className={`px-3.5 py-1.5 transition-colors ${
+              className={`px-3.5 py-1.5 transition-colors cursor-pointer ${
                 displayCurrency === 'INR'
                   ? 'bg-coral text-white'
                   : 'bg-surface text-soft-dark hover:bg-hover'
@@ -208,7 +190,7 @@ function ComparePageContent(): React.ReactElement {
               type="button"
               onClick={() => setDisplayCurrency('USD')}
               aria-label="Show salaries in US Dollars"
-              className={`px-3.5 py-1.5 transition-colors ${
+              className={`px-3.5 py-1.5 transition-colors cursor-pointer ${
                 displayCurrency === 'USD'
                   ? 'bg-coral text-white'
                   : 'bg-surface text-soft-dark hover:bg-hover'
@@ -221,26 +203,27 @@ function ComparePageContent(): React.ReactElement {
 
         {/* ---- Company context banner (from company page "Compare" button) ---- */}
         {showCompanyContext && (
-          <div className="rounded-2xl border border-data-blue/30 bg-data-blue/5 px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
+          <div className="rounded-xl border border-data-blue/30 bg-data-blue/5 px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
             Comparing from{' '}
-            <span className="text-coral">{companyFromC1!.name}</span>. Change
+            <span className="text-coral font-bold">{companyFromC1!.name}</span>. Change
             selection below.
           </div>
         )}
 
         {/* ---- Invalid-ID banner ---- */}
         {(invalidId1 || invalidId2) && (
-          <div className="rounded-2xl border border-warning/40 bg-warning/10 px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
+          <div className="rounded-xl border border-warning/40 bg-warning/10 px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
             Record not found. It may have been removed.
           </div>
         )}
 
-        {/* ---- Selectors ---- */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+        {/* ---- Selectors Row ---- */}
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:gap-4 bg-surface border border-border rounded-2xl p-5 shadow-sm">
+          {/* Record 1 Selector */}
+          <div className="flex-1 w-full font-sans">
             <label
               htmlFor="compare-select-1"
-              className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-neutral"
+              className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral"
             >
               Record 1
             </label>
@@ -248,23 +231,31 @@ function ComparePageContent(): React.ReactElement {
               id="compare-select-1"
               value={record1?.id ?? ''}
               onChange={handleSelect1}
-              className="w-full truncate rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-soft-dark shadow-sm transition-colors focus:border-coral focus:outline-none focus:ring-1 focus:ring-coral"
+              className="w-full border border-border rounded-xl px-4 py-3 text-sm text-airbnb bg-surface focus:border-coral focus:outline-none cursor-pointer"
             >
               <option value="" disabled>
-                Select a salary record…
+                Select a salary record...
               </option>
               {SALARY_RECORDS.map((record) => (
                 <option key={record.id} value={record.id}>
-                  {buildOptionLabel(record)}
+                  {buildOptionLabel(record, displayCurrency)}
                 </option>
               ))}
             </select>
           </div>
 
-          <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+          {/* VS Divider */}
+          <div className="flex items-center justify-center shrink-0 md:pb-1 select-none">
+            <div className="bg-surface border border-border rounded-full w-10 h-10 flex items-center justify-center text-xs font-bold text-neutral">
+              vs
+            </div>
+          </div>
+
+          {/* Record 2 Selector */}
+          <div className="flex-1 w-full font-sans">
             <label
               htmlFor="compare-select-2"
-              className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-neutral"
+              className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral"
             >
               Record 2
             </label>
@@ -272,14 +263,14 @@ function ComparePageContent(): React.ReactElement {
               id="compare-select-2"
               value={record2?.id ?? ''}
               onChange={handleSelect2}
-              className="w-full truncate rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-soft-dark shadow-sm transition-colors focus:border-coral focus:outline-none focus:ring-1 focus:ring-coral"
+              className="w-full border border-border rounded-xl px-4 py-3 text-sm text-airbnb bg-surface focus:border-coral focus:outline-none cursor-pointer"
             >
               <option value="" disabled>
-                Select a salary record…
+                Select a salary record...
               </option>
               {SALARY_RECORDS.map((record) => (
                 <option key={record.id} value={record.id}>
-                  {buildOptionLabel(record)}
+                  {buildOptionLabel(record, displayCurrency)}
                 </option>
               ))}
             </select>
@@ -289,24 +280,55 @@ function ComparePageContent(): React.ReactElement {
         {/* ---- Result area ---- */}
         {isIdentical ? (
           /* Edge case: same record selected in both slots */
-          <div className="rounded-2xl border border-warning/40 bg-warning/10 px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
-            You&apos;re comparing a record with itself. Please select two
-            different records.
+          <div className="rounded-xl border border-warning/40 bg-warning/10 px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
+            You&apos;re comparing a record with itself. Please select two different records.
           </div>
         ) : record1 && record2 ? (
-          <div className="rounded-2xl border border-border bg-surface shadow-sm overflow-hidden">
+          <div className="space-y-6">
             <ComparisonTable
               record1={record1}
               record2={record2}
               displayCurrency={displayCurrency}
             />
+
+            {/* Share Button */}
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={handleShare}
+                className="border border-border rounded-lg px-4 py-2 text-sm text-neutral hover:bg-hover flex items-center gap-2 cursor-pointer transition-colors shadow-sm bg-surface font-semibold"
+              >
+                {copied ? (
+                  <>
+                    <i className="ti ti-check text-success text-base" />
+                    <span>✓ Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <i className="ti ti-share text-base" />
+                    <span>Share this comparison</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         ) : (
-          <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-dashed border-border bg-surface shadow-sm">
-            <p className="text-xs font-semibold text-neutral">
-              {record1 || record2
-                ? 'Select a second record to compare'
-                : 'Select two salary records to compare'}
+          /* Empty State */
+          <div className="flex flex-col items-center justify-center p-8 bg-surface border border-dashed border-border rounded-2xl min-h-[260px] shadow-sm select-none">
+            <svg width="80" height="60" viewBox="0 0 80 60" className="mb-4">
+              <rect x="2" y="8" width="32" height="44" rx="4" fill="none" stroke="#EBEBEB" strokeWidth="2" />
+              <rect x="46" y="8" width="32" height="44" rx="4" fill="none" stroke="#EBEBEB" strokeWidth="2" strokeDasharray="4,3" />
+              <line x1="37" y1="30" x2="43" y2="30" stroke="#717171" strokeWidth="1.5" />
+            </svg>
+            <p className="text-sm font-semibold text-airbnb text-center">
+              {!record1 && !record2
+                ? 'Select two records to see the comparison'
+                : 'Now select a second record'}
+            </p>
+            <p className="text-xs text-neutral text-center mt-1">
+              {!record1 && !record2
+                ? 'Choose any two offers from the database above to benchmark them side-by-side.'
+                : 'Choose another offer to compare packages and levels.'}
             </p>
           </div>
         )}
@@ -324,7 +346,7 @@ export default function ComparePage(): React.ReactElement {
     <Suspense
       fallback={
         <div className="flex min-h-[300px] items-center justify-center bg-app-bg">
-          <p className="text-sm text-neutral">Loading comparison…</p>
+          <p className="text-sm text-neutral font-semibold">Loading comparison…</p>
         </div>
       }
     >

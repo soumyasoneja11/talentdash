@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 import { FilterBar } from '@/components/features/FilterBar';
 import { SalaryTable } from '@/components/features/SalaryTable';
+import { RoleExplorer } from '@/components/features/RoleExplorer';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Pagination } from '@/components/ui/Pagination';
 import { filterAndSortRecords } from '@/lib/filter-utils';
@@ -80,6 +81,15 @@ const extractUniqueValues = (records: SalaryRecord[]) => ({
   ),
 });
 
+const getTopLocation = (records: SalaryRecord[]): string => {
+  const counts = new Map<string, number>();
+  for (const record of records) {
+    counts.set(record.location, (counts.get(record.location) ?? 0) + 1);
+  }
+  const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  return sorted[0]?.[0] ?? '—';
+};
+
 const getPopularRoles = (records: SalaryRecord[], limit = 3): string[] => {
   const counts = new Map<string, number>();
 
@@ -106,6 +116,56 @@ const formatRoleList = (roles: string[]): string => {
   return `${roles.slice(0, -1).join(', ')}, and ${roles[roles.length - 1]}`;
 };
 
+/* ------------------------------------------------------------------ */
+/*  SVG Icons (inline, no external dependency)                        */
+/* ------------------------------------------------------------------ */
+
+const IconCurrencyRupee = () => (
+  <svg
+    className="h-5 w-5 text-coral"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M6 3h12M6 8h12M6 13l8.5 8M6 13h3c3.5 0 6-2.5 6-5H6" />
+  </svg>
+);
+
+const IconChartBar = () => (
+  <svg
+    className="h-5 w-5 text-coral"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M3 12h4v9H3zM10 7h4v14h-4zM17 3h4v18h-4z" />
+  </svg>
+);
+
+const IconMapPin = () => (
+  <svg
+    className="h-5 w-5 text-coral"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M12 21s-6-5.1-6-10a6 6 0 1 1 12 0c0 4.9-6 10-6 10Z" />
+    <circle cx="12" cy="11" r="2.5" />
+  </svg>
+);
+
 export default async function SalariesPage({
   searchParams,
 }: SalariesPageProps): Promise<React.ReactElement> {
@@ -128,6 +188,34 @@ export default async function SalariesPage({
   );
   const popularRoles = formatRoleList(getPopularRoles(SALARY_RECORDS));
 
+  // Stats
+  const medianTC =
+    totalRecords > 0
+      ? formatCurrency(
+          computeMedian(filtered.map((r) => r.total_compensation)),
+          displayCurrency,
+          displayCurrency,
+          { compact: true }
+        )
+      : '—';
+
+  const salaryRange =
+    totalRecords > 0
+      ? `${formatCurrency(
+          Math.min(...filtered.map((r) => r.total_compensation)),
+          displayCurrency,
+          displayCurrency,
+          { compact: true }
+        )} – ${formatCurrency(
+          Math.max(...filtered.map((r) => r.total_compensation)),
+          displayCurrency,
+          displayCurrency,
+          { compact: true }
+        )}`
+      : '—';
+
+  const topLocation = getTopLocation(filtered);
+
   return (
     <div className="bg-app-bg min-h-screen pb-12">
       <script
@@ -136,8 +224,8 @@ export default async function SalariesPage({
       />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6 pt-6">
-        {/* Header Section */}
-        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+        {/* ---- Page Header ---- */}
+        <div>
           <h1 className="text-2xl font-bold text-airbnb tracking-tight">
             Tech Salary Data in India
           </h1>
@@ -146,61 +234,56 @@ export default async function SalariesPage({
             {totalRecords === 1 ? '' : 's'} — covering popular roles such as{' '}
             {popularRoles}.
           </p>
+        </div>
 
-          {/* Dynamic metrics stats bar */}
-          <div className="flex flex-wrap gap-x-12 gap-y-4 mt-5 pt-5 border-t border-border/60">
-            <div>
-              <p className="text-[10px] font-bold text-neutral uppercase tracking-wider">
-                Matching Records
-              </p>
-              <p className="text-xl font-black text-airbnb mt-0.5">
-                {totalRecords}
-              </p>
+        {/* ---- Stats Strip ---- */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Stat 1: Median TC */}
+          <div className="bg-surface rounded-xl border border-border p-5">
+            <div className="mb-2">
+              <IconCurrencyRupee />
             </div>
-            <div>
-              <p className="text-[10px] font-bold text-neutral uppercase tracking-wider">
-                Median TC
-              </p>
-              <p className="text-xl font-black text-data-blue mt-0.5">
-                {totalRecords > 0
-                  ? formatCurrency(
-                      computeMedian(filtered.map((r) => r.total_compensation)),
-                      displayCurrency,
-                      displayCurrency,
-                      { compact: true }
-                    )
-                  : '—'}
-              </p>
+            <p className="text-2xl font-bold text-airbnb">{medianTC}</p>
+            <p className="text-xs text-neutral uppercase tracking-wide mt-1">
+              Median Total Pay
+            </p>
+          </div>
+
+          {/* Stat 2: Range */}
+          <div className="bg-surface rounded-xl border border-border p-5">
+            <div className="mb-2">
+              <IconChartBar />
             </div>
-            <div>
-              <p className="text-[10px] font-bold text-neutral uppercase tracking-wider">
-                Highest TC
-              </p>
-              <p className="text-xl font-black text-airbnb mt-0.5">
-                {totalRecords > 0
-                  ? formatCurrency(
-                      Math.max(...filtered.map((r) => r.total_compensation)),
-                      displayCurrency,
-                      displayCurrency,
-                      { compact: true }
-                    )
-                  : '—'}
-              </p>
+            <p className="text-2xl font-bold text-airbnb">{salaryRange}</p>
+            <p className="text-xs text-neutral uppercase tracking-wide mt-1">
+              Salary Range
+            </p>
+          </div>
+
+          {/* Stat 3: Top Location */}
+          <div className="bg-surface rounded-xl border border-border p-5">
+            <div className="mb-2">
+              <IconMapPin />
             </div>
+            <p className="text-2xl font-bold text-airbnb">{topLocation}</p>
+            <p className="text-xs text-neutral uppercase tracking-wide mt-1">
+              Top Location
+            </p>
           </div>
         </div>
 
-        {/* FilterBar Wrapper */}
-        <div className="rounded-2xl border border-border bg-surface shadow-sm overflow-hidden">
-          <FilterBar
-            initialFilters={filters}
-            companies={companies}
-            roles={roles}
-            locations={locations}
-          />
-        </div>
+        {/* ---- Role Explorer ---- */}
+        <RoleExplorer records={filtered} displayCurrency={displayCurrency} />
 
-        {/* Table/Results Wrapper */}
+        {/* ---- Filter Bar ---- */}
+        <FilterBar
+          initialFilters={filters}
+          companies={companies}
+          roles={roles}
+          locations={locations}
+        />
+
+        {/* ---- Table/Results ---- */}
         <div className="rounded-2xl border border-border bg-surface shadow-sm overflow-hidden">
           {paginatedRecords.length === 0 ? (
             <div className="px-6 py-8">

@@ -1,12 +1,41 @@
+@import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css');
 @import 'tailwindcss';
 
+@theme {
+  --color-coral: #FF5A5F;
+  --color-airbnb: #222222;
+  --color-soft-dark: #484848;
+  --color-neutral: #717171;
+  --color-navy-100: #E0E7FF;
+  --color-navy-800: #1E1B4B;
+  --color-surface: #F0FDFC;
+  --color-app-bg: #E6F7F7;
+  --color-border: #B2DFDB;
+  --color-success: #008A05;
+  --color-warning: #FFB400;
+  --color-error: #D93025;
+  --color-hover: #E0F2F1;
+  --color-data-blue: #0369A1;
+
+  --color-teal-brand: #0D9488;
+  --color-sea-green: #14B8A6;
+  --color-deep-teal: #0F766E;
+  --color-teal-muted: #CCFBF1;
+  --color-teal-subtle: #F0FDFA;
+
+  --font-sans: 'Inter', 'system-ui', 'sans-serif';
+  
+  --font-size-salary-sm: 32px;
+  --font-size-salary-lg: 40px;
+}
+
 :root {
-  --border-default: 1px solid #ebebeb;
+  --border-default: 1px solid #B2DFDB;
 }
 
 html,
 body {
-  background: #f7f7f7;
+  background: #E6F7F7;
   color: #484848;
   font-family: 'Inter', system-ui, sans-serif;
 }
@@ -22,4 +51,112 @@ body {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+/* Hide scrollbar while keeping scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Global animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-fade-in {
+  animation: fadeIn 0.35s ease both;
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  background-size: 200% auto;
+  animation: shimmer 1.5s linear infinite;
+}
+
+/* Stagger delay utilities */
+.delay-75  { animation-delay: 75ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-225 { animation-delay: 225ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-375 { animation-delay: 375ms; }
+.delay-450 { animation-delay: 450ms; }
+
+/* Page-level smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll reveal — elements start invisible, JS adds .revealed */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Stagger delays for sibling .reveal elements */
+.reveal:nth-child(1) { transition-delay: 0ms; }
+.reveal:nth-child(2) { transition-delay: 60ms; }
+.reveal:nth-child(3) { transition-delay: 120ms; }
+.reveal:nth-child(4) { transition-delay: 180ms; }
+.reveal:nth-child(5) { transition-delay: 240ms; }
+.reveal:nth-child(6) { transition-delay: 300ms; }
+.reveal:nth-child(n+7) { transition-delay: 300ms; }
+
+/* Respect user preference */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .animate-fade-in-up, .animate-fade-in, .animate-slide-in-right {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Link hover underline animation (replaces default underline) */
+.animated-link {
+  position: relative;
+  text-decoration: none;
+}
+.animated-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: currentColor;
+  transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.animated-link:hover::after {
+  width: 100%;
 }

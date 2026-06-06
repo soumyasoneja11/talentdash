@@ -86,12 +86,18 @@ export const FilterBar = ({
   const activeFilterCount = countActiveFilters(filters);
 
   useEffect(() => {
+    if (companyInput === filters.company) {
+      return;
+    }
     const timer = setTimeout(() => {
-      setFilters((prev) => ({ ...prev, company: companyInput }));
+      setFilters((prev) => {
+        if (prev.company === companyInput) return prev;
+        return { ...prev, company: companyInput };
+      });
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [companyInput]);
+  }, [companyInput, filters.company]);
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -106,7 +112,7 @@ export const FilterBar = ({
     const query = buildSearchParams(toSalaryFilters(filters));
     const basePath = pathname.startsWith('/salaries') ? pathname : '/salaries';
     const url = query ? `${basePath}?${query}` : basePath;
-    router.push(url);
+    router.push(url, { scroll: false });
   }, [filters, pathname, router]);
 
   const toggleLevel = (level: LevelEnum): void => {
@@ -128,37 +134,138 @@ export const FilterBar = ({
       location: '',
       currency: 'INR',
     });
-    router.push('/salaries');
+    router.push('/salaries', { scroll: false });
   };
 
   return (
-    <div className="sticky top-20 z-10 border-b border-border bg-surface px-6 py-4 min-h-[72px]">
-      <div className="flex flex-wrap items-center gap-4">
-        <input
-          type="text"
-          value={companyInput}
-          onChange={(event) => setCompanyInput(event.target.value)}
-          placeholder="Search company..."
-          className="min-w-[180px] rounded-md border border-border px-3 py-2 text-sm text-soft-dark placeholder:text-neutral focus:border-coral focus:outline-none"
-          aria-label="Search company"
-        />
+    <div className="bg-surface border border-border rounded-xl p-4">
+      {/* Main filter grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Company Search */}
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="filter-company"
+            className="text-xs font-medium text-neutral uppercase tracking-wide"
+          >
+            Company
+          </label>
+          <input
+            id="filter-company"
+            type="text"
+            value={companyInput}
+            onChange={(event) => setCompanyInput(event.target.value)}
+            placeholder="Search company..."
+            className={cn(
+              'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface placeholder:text-neutral focus:border-teal-brand focus:outline-none w-full',
+              companyInput.trim() ? 'border-teal-brand/60 bg-teal-subtle/50' : 'border-border'
+            )}
+            aria-label="Search company"
+          />
+        </div>
 
-        <select
-          value={filters.role}
-          onChange={(event) =>
-            setFilters((prev) => ({ ...prev, role: event.target.value }))
-          }
-          className="rounded-md border border-border bg-surface px-3 py-2 text-sm text-soft-dark focus:border-coral focus:outline-none"
-          aria-label="Filter by role"
-        >
-          <option value="">All Roles</option>
-          {sortedRoles.map((role) => (
-            <option key={role} value={role}>
-              {role}
-            </option>
-          ))}
-        </select>
+        {/* Role Filter */}
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="filter-role"
+            className="text-xs font-medium text-neutral uppercase tracking-wide"
+          >
+            Role
+          </label>
+          <select
+            id="filter-role"
+            value={filters.role}
+            onChange={(event) =>
+              setFilters((prev) => ({ ...prev, role: event.target.value }))
+            }
+            className={cn(
+              'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface focus:border-teal-brand focus:outline-none w-full',
+              filters.role ? 'border-teal-brand/60 bg-teal-subtle/50' : 'border-border'
+            )}
+            aria-label="Filter by role"
+          >
+            <option value="">All Roles</option>
+            {sortedRoles.map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+        </div>
 
+        {/* Location Filter */}
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="filter-location"
+            className="text-xs font-medium text-neutral uppercase tracking-wide"
+          >
+            Location
+          </label>
+          <select
+            id="filter-location"
+            value={filters.location}
+            onChange={(event) =>
+              setFilters((prev) => ({ ...prev, location: event.target.value }))
+            }
+            className={cn(
+              'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface focus:border-teal-brand focus:outline-none w-full',
+              filters.location ? 'border-teal-brand/60 bg-teal-subtle/50' : 'border-border'
+            )}
+            aria-label="Filter by location"
+          >
+            <option value="">All Locations</option>
+            {sortedLocations.map((location) => (
+              <option key={location} value={location}>
+                {location}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Currency Toggle */}
+        <div className="flex flex-col gap-1">
+          <span className="text-xs font-medium text-neutral uppercase tracking-wide">
+            Currency
+          </span>
+          <div className="inline-flex overflow-hidden rounded-lg border border-border self-start">
+            <button
+              type="button"
+              onClick={() =>
+                setFilters((prev) => ({ ...prev, currency: 'INR' }))
+              }
+              aria-label="Show salaries in Indian Rupees"
+              className={cn(
+                'px-3 py-2 text-sm font-medium transition-colors',
+                filters.currency === 'INR'
+                  ? 'bg-teal-brand text-white'
+                  : 'bg-surface text-neutral hover:bg-hover'
+              )}
+            >
+              ₹ INR
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                setFilters((prev) => ({ ...prev, currency: 'USD' }))
+              }
+              aria-label="Show salaries in US Dollars"
+              className={cn(
+                'border-l border-border px-3 py-2 text-sm font-medium transition-colors',
+                filters.currency === 'USD'
+                  ? 'bg-teal-brand text-white'
+                  : 'bg-surface text-neutral hover:bg-hover'
+              )}
+            >
+              $ USD
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Level filters */}
+      <div className="mt-4 pt-4 border-t border-border/60">
+        <p className="text-xs font-medium text-neutral uppercase tracking-wide mb-2">
+          Level
+        </p>
         <div className="flex flex-wrap items-center gap-3">
           {LEVEL_GROUPS.map((group) => (
             <div key={group.label} className="flex items-center gap-2">
@@ -175,7 +282,7 @@ export const FilterBar = ({
                       key={level}
                       className={cn(
                         'inline-flex cursor-pointer items-center gap-1 rounded-full',
-                        checked ? 'ring-2 ring-coral ring-offset-1' : ''
+                        checked ? 'ring-2 ring-teal-brand ring-offset-1' : ''
                       )}
                     >
                       <input
@@ -183,7 +290,7 @@ export const FilterBar = ({
                         checked={checked}
                         onChange={() => toggleLevel(level)}
                         aria-label={`Select level ${level}`}
-                        className="h-3 w-3 rounded border-border text-coral focus:ring-coral"
+                        className="h-3 w-3 rounded border-border text-teal-brand focus:ring-teal-brand"
                       />
                       <span
                         className={cn(
@@ -201,70 +308,24 @@ export const FilterBar = ({
             </div>
           ))}
         </div>
-
-        <select
-          value={filters.location}
-          onChange={(event) =>
-            setFilters((prev) => ({ ...prev, location: event.target.value }))
-          }
-          className="rounded-md border border-border bg-surface px-3 py-2 text-sm text-soft-dark focus:border-coral focus:outline-none"
-          aria-label="Filter by location"
-        >
-          <option value="">All Locations</option>
-          {sortedLocations.map((location) => (
-            <option key={location} value={location}>
-              {location}
-            </option>
-          ))}
-        </select>
-
-        <div className="inline-flex overflow-hidden rounded-md border border-border">
-          <button
-            type="button"
-            onClick={() => setFilters((prev) => ({ ...prev, currency: 'INR' }))}
-            aria-label="Show salaries in Indian Rupees"
-            className={cn(
-              'px-3 py-2 text-sm font-medium transition-colors',
-              filters.currency === 'INR'
-                ? 'bg-coral text-white'
-                : 'bg-surface text-neutral'
-            )}
-          >
-            ₹ INR
-          </button>
-          <button
-            type="button"
-            onClick={() => setFilters((prev) => ({ ...prev, currency: 'USD' }))}
-            aria-label="Show salaries in US Dollars"
-            className={cn(
-              'border-l border-border px-3 py-2 text-sm font-medium transition-colors',
-              filters.currency === 'USD'
-                ? 'bg-coral text-white'
-                : 'bg-surface text-neutral'
-            )}
-          >
-            $ USD
-          </button>
-        </div>
       </div>
 
-      <div className="mt-3 flex items-center gap-3">
-        {activeFilterCount > 0 ? (
-          <span className="rounded-full bg-hover px-2.5 py-0.5 text-xs font-medium text-soft-dark">
+      {/* Active filter indicator */}
+      {activeFilterCount > 0 && (
+        <div className="mt-3 flex items-center gap-3">
+          <span className="bg-teal-brand text-white text-xs px-2 py-0.5 rounded-full font-medium">
             {activeFilterCount} filter{activeFilterCount === 1 ? '' : 's'}{' '}
             active
           </span>
-        ) : null}
-        {activeFilterCount > 0 ? (
           <button
             type="button"
             onClick={handleClearAll}
-            className="text-xs font-medium text-coral hover:underline"
+            className="text-xs font-medium text-teal-brand hover:underline"
           >
             Clear all
           </button>
-        ) : null}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

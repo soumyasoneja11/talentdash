@@ -9,16 +9,27 @@ import { CompanyLogo } from '@/components/ui/CompanyLogo';
 export interface SalaryRowProps {
   record: SalaryRecord;
   displayCurrency: CurrencyEnum;
+  isEven?: boolean;
+  style?: React.CSSProperties;
+  className?: string;
 }
 
 export const SalaryRow = ({
   record,
   displayCurrency,
+  isEven = false,
+  style,
+  className,
 }: SalaryRowProps): React.ReactElement => {
   const showBreakdown = record.bonus > 0 || record.stock > 0;
+  const rowBg = isEven ? 'bg-surface' : 'bg-app-bg/50';
 
   return (
-    <tr data-id={record.id} className="transition-colors hover:bg-hover">
+    <tr
+      data-id={record.id}
+      className={`group ${rowBg} transition-all duration-150 ease-in-out hover:bg-hover hover:shadow-sm ${className ?? ''}`}
+      style={style}
+    >
       <td className="border-b border-border py-3 px-4 align-middle">
         <div className="flex items-center gap-3">
           <CompanyLogo
@@ -31,7 +42,7 @@ export const SalaryRow = ({
               href={`/companies/${record.company_slug}`}
               prefetch={true}
               title={record.company_display}
-              className="block max-w-[20ch] truncate font-medium text-airbnb hover:underline"
+              className="block max-w-[20ch] truncate font-medium text-airbnb hover:text-coral hover:underline transition-colors"
             >
               {record.company_display}
             </Link>
@@ -97,7 +108,7 @@ export const SalaryRow = ({
       </td>
       <td className="border-b border-border py-3 px-4 align-middle whitespace-nowrap">
         <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-data-blue">
+          <span className="tabular-nums text-base font-bold text-data-blue transition-colors duration-150 group-hover:text-teal-brand">
             {formatCurrency(
               record.total_compensation,
               record.currency,

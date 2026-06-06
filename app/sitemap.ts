@@ -16,7 +16,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: 'https://talentdash.com/companies',
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
+    {
       url: 'https://talentdash.com/compare',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: 'https://talentdash.com/tools',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: 'https://talentdash.com/tools/salary-calculator',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: 'https://talentdash.com/tools/hike-calculator',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.7,

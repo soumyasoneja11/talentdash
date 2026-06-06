@@ -140,24 +140,24 @@ export const getLevelBadgeStyle = (
   switch (level) {
     case 'L3':
     case 'SDE_I':
-      return { bg: 'bg-slate-100', text: 'text-slate-700', label: level };
+      return { bg: 'bg-teal-subtle', text: 'text-teal-brand', label: level };
     case 'L4':
     case 'SDE_II':
-      return { bg: 'bg-blue-100', text: 'text-blue-700', label: level };
+      return { bg: 'bg-[#E0F2F1]', text: 'text-[#0F766E]', label: level };
     case 'L5':
     case 'SDE_III':
-      return { bg: 'bg-indigo-100', text: 'text-indigo-700', label: level };
+      return { bg: 'bg-[#CCFBF1]', text: 'text-[#0D9488]', label: level };
     case 'L6':
     case 'STAFF':
-      return { bg: 'bg-purple-100', text: 'text-purple-700', label: level };
+      return { bg: 'bg-[#0D9488]', text: 'text-white', label: level };
     case 'PRINCIPAL':
-      return { bg: 'bg-navy-100', text: 'text-navy-800', label: level };
+      return { bg: 'bg-[#0F766E]', text: 'text-white', label: level };
     case 'IC4':
-      return { bg: 'bg-cyan-100', text: 'text-cyan-700', label: level };
+      return { bg: 'bg-[#E6F7F7]', text: 'text-[#0D9488]', label: level };
     case 'IC5':
-      return { bg: 'bg-teal-100', text: 'text-teal-700', label: level };
+      return { bg: 'bg-[#B2DFDB]', text: 'text-[#0F766E]', label: level };
     default:
-      return { bg: 'bg-slate-100', text: 'text-slate-700', label: level };
+      return { bg: 'bg-teal-subtle', text: 'text-teal-brand', label: level };
   }
 };
 

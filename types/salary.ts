@@ -51,6 +51,9 @@ export interface Company {
   headquarters?: string;
   founded_year?: number;
   headcount_range?: string;
+  website?: string;
+  rating?: number;
+  review_count?: number;
 }
 
 export interface SalaryFilters {

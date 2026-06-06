@@ -76,7 +76,7 @@ export const SalaryTable = ({
   }
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto scrollbar-hide">
       <table className="w-full border-collapse text-sm">
         <caption className="sr-only">
           Salary records filtered by current selection
@@ -103,10 +103,10 @@ export const SalaryTable = ({
                   key={header.key}
                   scope="col"
                   aria-sort={ariaSort}
-                  className="sticky top-0 border-b border-border bg-surface py-3 px-4 text-left text-xs font-medium uppercase tracking-wide text-neutral whitespace-nowrap"
+                  className="sticky top-0 border-b border-border bg-teal-muted/50 py-3 px-4 text-left text-xs font-medium uppercase tracking-wide text-neutral whitespace-nowrap"
                 >
                   <Link
-                    className="inline-flex items-center gap-1"
+                    className="inline-flex items-center gap-1 hover:text-airbnb transition-colors"
                     href={buildSortHref(nextSort, searchParams)}
                     aria-label={`Sort by ${header.label} ${directionWord}`}
                   >
@@ -121,13 +121,19 @@ export const SalaryTable = ({
           </tr>
         </thead>
         <tbody>
-          {records.map((record) => (
-            <SalaryRow
-              key={record.id}
-              record={record}
-              displayCurrency={displayCurrency}
-            />
-          ))}
+          {records.map((record, idx) => {
+            const delay = Math.min(idx * 30, 300);
+            return (
+              <SalaryRow
+                key={record.id}
+                record={record}
+                displayCurrency={displayCurrency}
+                isEven={idx % 2 === 0}
+                style={{ animationDelay: `${delay}ms` }}
+                className="animate-fade-in-up opacity-0 [animation-fill-mode:forwards]"
+              />
+            );
+          })}
         </tbody>
       </table>
     </div>

@@ -1005,14 +1005,64 @@ export const CONVERSION_RATES = {
   USD_TO_INR: 83.5,
 } as const;
 
+const COMPANY_METADATA: Record<string, Partial<Company>> = {
+  google: {
+    industry: 'Internet & Software',
+    headquarters: 'Bengaluru, Karnataka',
+    founded_year: 1998,
+    headcount_range: '10,000+ employees',
+    website: 'google.com',
+    rating: 4.2,
+    review_count: 9,
+  },
+  amazon: {
+    industry: 'E-commerce & Cloud',
+    headquarters: 'Bengaluru, Karnataka',
+    founded_year: 1994,
+    headcount_range: '10,000+ employees',
+    website: 'amazon.in',
+    rating: 3.8,
+    review_count: 12,
+  },
+  microsoft: {
+    industry: 'Software & Cloud Services',
+    headquarters: 'Hyderabad, Telangana',
+    founded_year: 1975,
+    headcount_range: '10,000+ employees',
+    website: 'microsoft.com',
+    rating: 4.4,
+    review_count: 15,
+  },
+  startupco: {
+    industry: 'Financial Technology',
+    headquarters: 'Bengaluru, Karnataka',
+    founded_year: 2021,
+    headcount_range: '11–50 employees',
+    website: 'startupco.in',
+    rating: 4.0,
+    review_count: 3,
+  },
+  'a-very-long-company-name-for-table-layouts': {
+    industry: 'Systems Engineering',
+    headquarters: 'Mumbai, Maharashtra',
+    founded_year: 2010,
+    headcount_range: '501–1,000 employees',
+    website: 'longcompanyname.com',
+    rating: 3.5,
+    review_count: 2,
+  },
+};
+
 export const COMPANIES: Company[] = Array.from(
   SALARY_RECORDS.reduce((map, record) => {
     if (!map.has(record.company_slug)) {
+      const meta = COMPANY_METADATA[record.company_slug] || {};
       map.set(record.company_slug, {
         id: record.company_slug,
         name: record.company_display,
         slug: record.company_slug,
         normalized_name: record.company,
+        ...meta,
       });
     }
     return map;
