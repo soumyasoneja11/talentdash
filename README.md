@@ -12,11 +12,11 @@
 ## Quick Start (under 5 minutes)
 
 ```bash
-git clone https://github.com/talentdash/talentdash.git
+git clone https://github.com/soumyasoneja11/talentdash.git
 cd talentdash
 npm install
 npm run dev
-# Open http://localhost:3000
+# Open http://localhost:3000/salaries
 ```
 
 To run the filter & sorting unit test suite:
@@ -90,3 +90,60 @@ The hardest architectural decision was choosing how to handle the currency conve
 - **Static vs On-Demand Filtering:** Selected URL-based query parameter updates using Next.js `router.push` instead of client-side-only filtering. While this adds a slight latency for server roundtrips, it ensures that search results are fully shareable, bookmarkable, and indexed by search crawlers.
 - **Inline SVG Icons:** Opted for inline SVG definitions instead of loading external icon packages (e.g., FontAwesome, Lucide React). This keeps the JavaScript bundles exceptionally small and prevents layout shifts during icon hydration.
 - **Mock Data Currency Normalization:** Computed company medians on raw compensation numbers without dynamic currency-adjustments inside the core stats builder, relying on company-level currency parity in the mock set. This was selected to save runtime complexity.
+
+## Pre-Submission Verification
+
+Verified against **https://talentdash-three.vercel.app** on 6 June 2026.
+
+### Core functionality (HTTP status)
+
+| URL | Expected | Result |
+|-----|----------|--------|
+| `/salaries` | 200 | ✅ 200 |
+| `/companies/amazon` | 200 | ✅ 200 |
+| `/companies/nonexistent` | 404 | ✅ 404 |
+| `/compare` | 200 | ✅ 200 |
+
+### SEO
+
+| Check | Result |
+|-------|--------|
+| `/salaries` contains `application/ld+json` | ✅ Found |
+| `/companies/amazon` contains `canonical` | ✅ Found |
+| `/sitemap.xml` returns valid XML | ✅ 200, valid urlset |
+| `/robots.txt` returns content | ✅ User-agent, Allow, Disallow, Sitemap |
+
+### Performance (Lighthouse, live URL)
+
+| Metric | Mobile | Desktop | Target |
+|--------|--------|---------|--------|
+| Performance score | 80 | 99 | ≥ 85 |
+| LCP | 3.1s | 0.7s | < 2.5s |
+
+Mobile LCP is slightly above target on cold load (Tabler icon webfont CDN). Desktop exceeds all targets. Re-run at [PageSpeed Insights](https://pagespeed.web.dev/analysis?url=https://talentdash-three.vercel.app/salaries).
+
+### README checklist
+
+- ✅ Live Vercel URL at the top
+- ✅ `git clone` + `npm install` + `npm run dev` quick start
+- ✅ No environment variables needed (mock mode)
+- ✅ Architecture decisions section
+- ✅ "What I Would Build With More Time" section
+- ✅ Hardest decision paragraph
+
+### Commit history
+
+Incremental commits (not a single Day-3 dump):
+
+- `feat: implement foundation, mock data, and salaries page list`
+- `feat: configure sitemaps, robots.txt, and metadata builders`
+- `feat: implement company research page and stats layout`
+- `feat: implement interactive compare page and comparison table`
+- `perf: optimize LCP/CLS performance, accessibility contrast, and document architecture`
+- `fix: edge cases` (sorting, filters, empty states — across follow-up commits)
+- `docs: README and architecture documentation`
+- `chore: deployment configuration and Vercel setup`
+
+## Submission Notes
+
+I built the TalentDash frontend trial deliverables — a filterable salary table with URL-encoded state, 27 statically generated company pages, a side-by-side compare tool with delta calculations, SEO metadata with JSON-LD, and career calculators — all deployed live at **https://talentdash-three.vercel.app**. The hardest architectural decision was balancing React Server Components with shareable filter state: keeping the salary table as a server component while the FilterBar syncs query parameters client-side, so every filtered view is bookmarkable and crawlable without shipping the full dataset to the browser. I am most proud of the end-to-end correctness of filter + sort + pagination working together, with deterministic currency conversion through a single `CONVERSION_RATES` source of truth across salaries, company stats, and compare deltas. With more time, I would connect to a real PostgreSQL API with ISR revalidation instead of mock JSON, and optimize mobile LCP (currently ~3.1s on Lighthouse mobile, slightly above the 2.5s target, largely due to the Tabler icon webfont CDN). I deliberately cut authentication, community/forum modules, a real database layer, and a marketing homepage as the primary entry point — the root redirects to `/salaries` because the trial brief identifies the salary table as the core SEO asset and primary deliverable.
