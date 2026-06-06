@@ -4,180 +4,157 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Career & Salary Tools — Tax Calculator, Hike Calculator | TalentDash',
-  description: 'Free career tools for Indian tech professionals. Calculate in-hand salary after tax (New & Old regime), compute salary hikes, and evaluate job offers.',
+  description:
+    'Free career tools for Indian tech professionals. Calculate in-hand salary after tax (New & Old regime), compute salary hikes, and evaluate job offers.',
   alternates: {
     canonical: 'https://talentdash.com/tools',
   },
 };
 
+const TOOLS = [
+  {
+    href: '/tools/salary-calculator',
+    title: 'Salary & Tax Calculator',
+    description:
+      'Calculate your exact monthly in-hand salary from your CTC. Supports both New Tax Regime (FY 2025–26) and Old Tax Regime with HRA and standard deductions.',
+    icon: 'ti-calculator',
+    available: true,
+  },
+  {
+    href: '/tools/hike-calculator',
+    title: 'Hike Calculator',
+    description:
+      'Enter your current base salary and expected hike percentage to get your new salary and absolute rupee gain instantly. Compare hikes to market averages.',
+    icon: 'ti-trending-up',
+    available: true,
+  },
+  {
+    href: null,
+    title: 'Offer Comparison',
+    description:
+      'Compare two job offers side-by-side including base, bonus, equity, location cost-of-living adjustments, and growth trajectory.',
+    icon: 'ti-scale',
+    available: false,
+  },
+  {
+    href: null,
+    title: 'EMI & Loan Planner',
+    description:
+      'Calculate home loan or personal loan EMIs based on your in-hand salary. Know how much you can afford to borrow on your tech salary.',
+    icon: 'ti-home',
+    available: false,
+  },
+] as const;
+
 export default function ToolsIndexPage(): React.ReactElement {
   return (
-    <div className="bg-app-bg min-h-screen py-8">
-      <div className="mx-auto max-w-4xl px-4 space-y-6">
-        
-        {/* ========== BREADCRUMB ========== */}
-        <nav aria-label="Breadcrumb" className="text-xs font-semibold text-neutral">
-          <ol className="flex items-center gap-1.5">
-            <li>
-              <Link href="/" className="animated-link hover:text-airbnb transition-colors">
-                Home
-              </Link>
-            </li>
-            <li aria-hidden="true" className="text-neutral/60 select-none">&gt;</li>
-            <li className="text-soft-dark" aria-current="page">
-              Tools
-            </li>
-          </ol>
-        </nav>
+    <div className="bg-app-bg min-h-screen">
+      <div className="border-b border-border/60 bg-gradient-to-br from-coral-subtle/60 via-surface to-app-bg">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-4 text-xs font-semibold text-neutral"
+          >
+            <ol className="flex items-center gap-1.5">
+              <li>
+                <Link
+                  href="/"
+                  className="animated-link transition-colors hover:text-airbnb"
+                >
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true" className="select-none text-neutral/60">
+                &gt;
+              </li>
+              <li className="text-soft-dark" aria-current="page">
+                Tools
+              </li>
+            </ol>
+          </nav>
 
-        {/* ========== PAGE HEADER ========== */}
-        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-coral mb-2">
+            Free Calculators
+          </p>
           <h1 className="text-3xl font-bold text-airbnb tracking-tight">
             Career Tools
           </h1>
-          <p className="mt-2 text-base text-soft-dark leading-relaxed max-w-2xl font-medium">
-            Free calculators to help you negotiate better, understand your take-home pay, and evaluate job switches.
+          <p className="mt-2 max-w-2xl text-sm text-neutral leading-relaxed">
+            Free calculators to help you negotiate better, understand your
+            take-home pay, and evaluate job switches.
           </p>
         </div>
+      </div>
 
-        {/* ========== TOOLS GRID ========== */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-6">
-          
-          {/* TOOL 1 — Salary & Tax Calculator */}
-          <Link
-            href="/tools/salary-calculator"
-            className="reveal bg-surface border border-border rounded-2xl p-6 hover:border-coral hover:shadow-sm transition-all group flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50">
-                  <svg className="w-5 h-5 text-data-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M6 3h12" />
-                    <path d="M6 8h12" />
-                    <path d="M6 13h8.5a4.5 4.5 0 0 0 0-9H6" />
-                    <path d="M6 13l7.5 7.5" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-airbnb text-base group-hover:text-coral transition-colors">
-                  Salary &amp; Tax Calculator
-                </h3>
-              </div>
-              <p className="text-sm text-soft-dark leading-relaxed mt-3">
-                Calculate your exact monthly in-hand salary from your CTC. Supports both New Tax Regime (FY 2024–25) and Old Tax Regime with HRA and standard deductions.
-              </p>
-            </div>
-            <div className="text-sm text-coral font-bold mt-5 flex items-center gap-1 group-hover:underline">
-              Open calculator →
-            </div>
-          </Link>
-
-          {/* TOOL 2 — Hike Calculator */}
-          <Link
-            href="/tools/hike-calculator"
-            className="reveal bg-surface border border-border rounded-2xl p-6 hover:border-coral hover:shadow-sm transition-all group flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50">
-                  <svg className="w-5 h-5 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                    <polyline points="17 6 23 6 23 12" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-airbnb text-base group-hover:text-coral transition-colors">
-                  Hike Calculator
-                </h3>
-              </div>
-              <p className="text-sm text-soft-dark leading-relaxed mt-3">
-                Enter your current base salary and expected hike percentage to get your new salary and absolute rupee gain instantly. Compare hikes to market averages.
-              </p>
-            </div>
-            <div className="text-sm text-coral font-bold mt-5 flex items-center gap-1 group-hover:underline">
-              Open calculator →
-            </div>
-          </Link>
-
-          {/* TOOL 3 — Offer Comparison (Coming Soon) */}
-          <div
-            className="reveal bg-surface/70 border border-border rounded-2xl p-6 opacity-75 select-none flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-50">
-                    <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="12" y1="3" x2="12" y2="21" />
-                      <line x1="2" y1="7" x2="22" y2="7" />
-                      <path d="M5 7c0 7 3 9 7 9s7-2 7-9" />
-                      <path d="M19 7c0 7-3 9-7 9" />
-                    </svg>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+          {TOOLS.map((tool) =>
+            tool.available && tool.href ? (
+              <Link
+                key={tool.title}
+                href={tool.href}
+                className="reveal group flex flex-col justify-between rounded-2xl border border-border bg-surface p-6 shadow-sm transition-all hover:border-coral/50 hover:shadow-md hover:-translate-y-0.5"
+              >
+                <div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-coral-subtle transition-colors group-hover:bg-hover">
+                      <i className={`ti ${tool.icon} text-xl text-coral`} />
+                    </div>
+                    <h3 className="text-base font-semibold text-airbnb transition-colors group-hover:text-coral">
+                      {tool.title}
+                    </h3>
                   </div>
-                  <h3 className="font-semibold text-airbnb text-base">
-                    Offer Comparison
-                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-soft-dark">
+                    {tool.description}
+                  </p>
                 </div>
-                <span className="bg-amber-50 text-amber-700 text-xs font-semibold px-2 py-0.5 rounded-full border border-amber-100">
-                  Coming Soon
-                </span>
-              </div>
-              <p className="text-sm text-soft-dark leading-relaxed mt-3">
-                Compare two job offers side-by-side including base, bonus, equity, location cost-of-living adjustments, and growth trajectory.
-              </p>
-            </div>
-            <div className="text-sm text-neutral font-semibold mt-5">
-              Under development
-            </div>
-          </div>
-
-          {/* TOOL 4 — EMI & Loan Calculator (Coming Soon) */}
-          <div
-            className="reveal bg-surface/70 border border-border rounded-2xl p-6 opacity-75 select-none flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50">
-                    <svg className="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                      <polyline points="9 22 9 12 15 12 15 22" />
-                    </svg>
+                <div className="mt-5 flex items-center gap-1 text-sm font-bold text-coral group-hover:underline">
+                  Open calculator →
+                </div>
+              </Link>
+            ) : (
+              <div
+                key={tool.title}
+                className="reveal flex select-none flex-col justify-between rounded-2xl border border-dashed border-border bg-surface/60 p-6 opacity-80"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-neutral/5">
+                        <i className={`ti ${tool.icon} text-xl text-neutral`} />
+                      </div>
+                      <h3 className="text-base font-semibold text-airbnb">
+                        {tool.title}
+                      </h3>
+                    </div>
+                    <span className="shrink-0 rounded-full border border-amber-100 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                      Coming Soon
+                    </span>
                   </div>
-                  <h3 className="font-semibold text-airbnb text-base">
-                    EMI &amp; Loan Planner
-                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-soft-dark">
+                    {tool.description}
+                  </p>
                 </div>
-                <span className="bg-amber-50 text-amber-700 text-xs font-semibold px-2 py-0.5 rounded-full border border-amber-100">
-                  Coming Soon
-                </span>
+                <div className="mt-5 text-sm font-semibold text-neutral">
+                  Under development
+                </div>
               </div>
-              <p className="text-sm text-soft-dark leading-relaxed mt-3">
-                Calculate home loan or personal loan EMIs based on your in-hand salary. Know how much you can afford to borrow on your tech salary.
-              </p>
-            </div>
-            <div className="text-sm text-neutral font-semibold mt-5">
-              Under development
-            </div>
-          </div>
-
+            )
+          )}
         </div>
 
-        {/* ========== LAUNCHING NOTE ========== */}
-        <p className="text-xs text-neutral text-center mt-6 select-none font-medium italic">
-          More tools launching soon — tax optimisation, equity vesting calculator, and city cost-of-living comparison.
+        <p className="select-none text-center text-xs font-medium italic text-neutral">
+          More tools launching soon — tax optimisation, equity vesting
+          calculator, and city cost-of-living comparison.
         </p>
 
-        {/* ========== INFO STRIP ========== */}
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3 shadow-sm select-none">
-          <svg className="w-5 h-5 text-data-blue shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="16" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12.01" y2="8" />
-          </svg>
-          <p className="text-sm text-soft-dark leading-relaxed font-semibold">
-            All calculations are estimates based on standard Indian tax rules for FY 2024–25. Consult a CA for precise figures.
+        <div className="flex items-start gap-3 rounded-xl border border-coral/20 bg-coral-subtle p-4 shadow-sm select-none">
+          <i className="ti ti-info-circle mt-0.5 shrink-0 text-lg text-coral" />
+          <p className="text-sm font-semibold leading-relaxed text-soft-dark">
+            All calculations are estimates based on standard Indian tax rules
+            for FY 2025–26. Consult a CA for precise figures.
           </p>
         </div>
-
       </div>
     </div>
   );

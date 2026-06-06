@@ -2,40 +2,37 @@
 @import 'tailwindcss';
 
 @theme {
+  /* TalentDash design system — frontend trial task spec */
   --color-coral: #FF5A5F;
+  --color-coral-dark: #E84E52;
+  --color-coral-subtle: #FFF0F0;
   --color-airbnb: #222222;
   --color-soft-dark: #484848;
   --color-neutral: #717171;
   --color-navy-100: #E0E7FF;
   --color-navy-800: #1E1B4B;
-  --color-surface: #F0FDFC;
-  --color-app-bg: #E6F7F7;
-  --color-border: #B2DFDB;
+  --color-surface: #FFFFFF;
+  --color-app-bg: #F7F7F7;
+  --color-border: #EBEBEB;
   --color-success: #008A05;
   --color-warning: #FFB400;
   --color-error: #D93025;
-  --color-hover: #E0F2F1;
+  --color-hover: #F2F2F2;
   --color-data-blue: #0369A1;
 
-  --color-teal-brand: #0D9488;
-  --color-sea-green: #14B8A6;
-  --color-deep-teal: #0F766E;
-  --color-teal-muted: #CCFBF1;
-  --color-teal-subtle: #F0FDFA;
-
   --font-sans: 'Inter', 'system-ui', 'sans-serif';
-  
+
   --font-size-salary-sm: 32px;
   --font-size-salary-lg: 40px;
 }
 
 :root {
-  --border-default: 1px solid #B2DFDB;
+  --border-default: 1px solid #EBEBEB;
 }
 
 html,
 body {
-  background: #E6F7F7;
+  background: #F7F7F7;
   color: #484848;
   font-family: 'Inter', system-ui, sans-serif;
 }

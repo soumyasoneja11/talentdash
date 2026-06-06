@@ -211,9 +211,9 @@ export const FilterBar = ({
             onChange={(event) => setCompanyInput(event.target.value)}
             placeholder="Search company..."
             className={cn(
-              'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface placeholder:text-neutral focus:border-teal-brand focus:outline-none w-full',
+              'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface placeholder:text-neutral focus:border-coral focus:outline-none w-full',
               companyInput.trim()
-                ? 'border-teal-brand/60 bg-teal-subtle/50'
+                ? 'border-coral/60 bg-coral-subtle/50'
                 : 'border-border'
             )}
             aria-label="Search company"
@@ -240,9 +240,9 @@ export const FilterBar = ({
               setFilters((prev) => ({ ...prev, role: event.target.value }))
             }
             className={cn(
-              'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface focus:border-teal-brand focus:outline-none w-full',
+              'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface focus:border-coral focus:outline-none w-full',
               filters.role
-                ? 'border-teal-brand/60 bg-teal-subtle/50'
+                ? 'border-coral/60 bg-coral-subtle/50'
                 : 'border-border'
             )}
             aria-label="Filter by role"
@@ -271,9 +271,9 @@ export const FilterBar = ({
               setFilters((prev) => ({ ...prev, location: event.target.value }))
             }
             className={cn(
-              'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface focus:border-teal-brand focus:outline-none w-full',
+              'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface focus:border-coral focus:outline-none w-full',
               filters.location
-                ? 'border-teal-brand/60 bg-teal-subtle/50'
+                ? 'border-coral/60 bg-coral-subtle/50'
                 : 'border-border'
             )}
             aria-label="Filter by location"
@@ -302,7 +302,7 @@ export const FilterBar = ({
               className={cn(
                 'px-3 py-2 text-sm font-medium transition-colors',
                 filters.currency === 'INR'
-                  ? 'bg-teal-brand text-white'
+                  ? 'bg-coral text-white'
                   : 'bg-surface text-neutral hover:bg-hover'
               )}
             >
@@ -317,7 +317,7 @@ export const FilterBar = ({
               className={cn(
                 'border-l border-border px-3 py-2 text-sm font-medium transition-colors',
                 filters.currency === 'USD'
-                  ? 'bg-teal-brand text-white'
+                  ? 'bg-coral text-white'
                   : 'bg-surface text-neutral hover:bg-hover'
               )}
             >
@@ -348,7 +348,7 @@ export const FilterBar = ({
                       key={level}
                       className={cn(
                         'inline-flex cursor-pointer items-center gap-1 rounded-full',
-                        checked ? 'ring-2 ring-teal-brand ring-offset-1' : ''
+                        checked ? 'ring-2 ring-coral ring-offset-1' : ''
                       )}
                     >
                       <input
@@ -356,7 +356,7 @@ export const FilterBar = ({
                         checked={checked}
                         onChange={() => toggleLevel(level)}
                         aria-label={`Select level ${level}`}
-                        className="h-3 w-3 rounded border-border text-teal-brand focus:ring-teal-brand"
+                        className="h-3 w-3 rounded border-border text-coral focus:ring-coral"
                       />
                       <span
                         className={cn(
@@ -379,14 +379,14 @@ export const FilterBar = ({
       {/* Active filter indicator */}
       {activeFilterCount > 0 && (
         <div className="mt-3 flex items-center gap-3">
-          <span className="bg-teal-brand text-white text-xs px-2 py-0.5 rounded-full font-medium">
+          <span className="bg-coral text-white text-xs px-2 py-0.5 rounded-full font-medium">
             {activeFilterCount} filter{activeFilterCount === 1 ? '' : 's'}{' '}
             active
           </span>
           <button
             type="button"
             onClick={handleClearAll}
-            className="text-xs font-medium text-teal-brand hover:underline"
+            className="text-xs font-medium text-coral hover:underline"
           >
             Clear all
           </button>

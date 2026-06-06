@@ -195,7 +195,7 @@ import type { Company, CompanyStats } from '../types/salary';
   const meta = buildCompanyPageMeta(mockCompany, mockStats);
   assert.strictEqual(
     meta.title,
-    'Google India Salaries — ₹24L Median TC | TalentDash'
+    'Google India Salaries — 24L ₹ Median TC | TalentDash'
   );
   assert.strictEqual(
     meta.description,
@@ -237,7 +237,7 @@ import type { LevelEnum } from '../types/salary';
   );
 
   const compact = formatCurrency(amount, 'INR', 'INR', { compact: true });
-  assert.strictEqual(compact, '₹4Cr', 'should format compact as ₹4Cr');
+  assert.strictEqual(compact, '4Cr ₹', 'should format compact as 4Cr ₹');
 }
 
 // 3. ZERO BONUS AND ZERO STOCK

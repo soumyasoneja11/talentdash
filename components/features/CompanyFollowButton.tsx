@@ -45,7 +45,7 @@ export const CompanyFollowButton = ({
       }
       className={`inline-flex items-center justify-center rounded-lg border px-4 py-2 text-sm font-bold transition cursor-pointer disabled:opacity-60 ${
         following
-          ? 'border-teal-brand bg-teal-subtle text-teal-brand'
+          ? 'border-coral bg-coral-subtle text-coral'
           : 'border-neutral/30 bg-surface text-airbnb hover:bg-hover'
       }`}
     >

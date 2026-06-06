@@ -23,7 +23,7 @@ export default function SubmitPage(): React.ReactElement {
           </p>
           <Link
             href="/salaries"
-            className="inline-flex items-center justify-center rounded-lg bg-teal-brand px-5 py-2.5 text-sm font-bold text-white hover:bg-deep-teal transition-colors"
+            className="inline-flex items-center justify-center rounded-lg bg-coral px-5 py-2.5 text-sm font-bold text-white hover:bg-coral-dark transition-colors"
           >
             Browse salaries
           </Link>
@@ -62,7 +62,7 @@ export default function SubmitPage(): React.ReactElement {
               type="text"
               required
               placeholder="e.g. Google India"
-              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-teal-brand focus:outline-none"
+              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-coral focus:outline-none"
             />
           </div>
 
@@ -79,7 +79,7 @@ export default function SubmitPage(): React.ReactElement {
               type="text"
               required
               placeholder="e.g. Software Engineer"
-              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-teal-brand focus:outline-none"
+              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-coral focus:outline-none"
             />
           </div>
 
@@ -96,7 +96,7 @@ export default function SubmitPage(): React.ReactElement {
                 name="level"
                 type="text"
                 placeholder="e.g. L4"
-                className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-teal-brand focus:outline-none"
+                className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-coral focus:outline-none"
               />
             </div>
             <div>
@@ -112,7 +112,7 @@ export default function SubmitPage(): React.ReactElement {
                 type="text"
                 required
                 placeholder="e.g. Bengaluru"
-                className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-teal-brand focus:outline-none"
+                className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-coral focus:outline-none"
               />
             </div>
           </div>
@@ -131,7 +131,7 @@ export default function SubmitPage(): React.ReactElement {
               min="0"
               required
               placeholder="e.g. 2500000"
-              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-teal-brand focus:outline-none"
+              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-coral focus:outline-none"
             />
           </div>
 
@@ -148,7 +148,7 @@ export default function SubmitPage(): React.ReactElement {
                 name="base"
                 type="number"
                 min="0"
-                className="w-full border border-border rounded-xl px-3 py-2 text-sm bg-surface focus:border-teal-brand focus:outline-none"
+                className="w-full border border-border rounded-xl px-3 py-2 text-sm bg-surface focus:border-coral focus:outline-none"
               />
             </div>
             <div>
@@ -164,7 +164,7 @@ export default function SubmitPage(): React.ReactElement {
                 type="number"
                 min="0"
                 defaultValue={0}
-                className="w-full border border-border rounded-xl px-3 py-2 text-sm bg-surface focus:border-teal-brand focus:outline-none"
+                className="w-full border border-border rounded-xl px-3 py-2 text-sm bg-surface focus:border-coral focus:outline-none"
               />
             </div>
             <div>
@@ -180,7 +180,7 @@ export default function SubmitPage(): React.ReactElement {
                 type="number"
                 min="0"
                 defaultValue={0}
-                className="w-full border border-border rounded-xl px-3 py-2 text-sm bg-surface focus:border-teal-brand focus:outline-none"
+                className="w-full border border-border rounded-xl px-3 py-2 text-sm bg-surface focus:border-coral focus:outline-none"
               />
             </div>
           </div>
@@ -198,7 +198,7 @@ export default function SubmitPage(): React.ReactElement {
               type="number"
               min="0"
               step="0.5"
-              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-teal-brand focus:outline-none"
+              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-surface focus:border-coral focus:outline-none"
             />
           </div>
 
@@ -209,7 +209,7 @@ export default function SubmitPage(): React.ReactElement {
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-teal-brand py-3 text-sm font-bold text-white hover:bg-deep-teal transition-colors cursor-pointer"
+            className="w-full rounded-xl bg-coral py-3 text-sm font-bold text-white hover:bg-coral-dark transition-colors cursor-pointer"
           >
             Submit anonymously
           </button>

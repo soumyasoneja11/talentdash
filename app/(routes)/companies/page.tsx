@@ -150,30 +150,33 @@ export default function CompaniesPage(): React.ReactElement {
   ];
 
   return (
-    <div className="bg-app-bg min-h-screen py-8">
-      <div className="mx-auto max-w-4xl px-4 space-y-8">
-        
-        {/* ========== PAGE HEADER ========== */}
-        <div>
+    <div className="bg-app-bg min-h-screen">
+      <div className="border-b border-border/60 bg-gradient-to-br from-coral-subtle/60 via-surface to-app-bg">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+          <p className="text-xs font-bold uppercase tracking-widest text-coral mb-2">
+            Employer Directory
+          </p>
           <h1 className="text-3xl font-bold text-airbnb tracking-tight">
             Companies
           </h1>
-          <p className="mt-1 text-sm text-neutral">
-            Explore salary data, reviews, and culture for {COMPANIES.length} companies
+          <p className="mt-2 text-sm text-neutral max-w-xl">
+            Explore salary data and compensation insights for {COMPANIES.length}{' '}
+            tech employers in India.
           </p>
-
-          {/* Search box wrapper */}
-          <div className="relative my-6 max-w-xl font-sans">
-            <i className="ti ti-search absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral text-lg pointer-events-none" />
+          <div className="relative mt-6 max-w-lg">
+            <i className="ti ti-search absolute left-4 top-1/2 -translate-y-1/2 text-neutral text-lg pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by company name, industry, or location..."
-              className="w-full border border-border rounded-xl pl-11 pr-4 py-3 text-sm bg-surface focus:border-coral focus:outline-none placeholder:text-neutral/60 shadow-sm"
+              placeholder="Search by name, industry, or location..."
+              className="w-full rounded-full border border-border bg-surface pl-11 pr-4 py-3 text-sm shadow-sm focus:border-coral focus:outline-none placeholder:text-neutral/60"
             />
           </div>
         </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 space-y-12">
 
         {/* ========== ALL COMPANIES GRID ========== */}
         <div>
@@ -188,17 +191,16 @@ export default function CompaniesPage(): React.ReactElement {
           </div>
 
           {filteredCompanies.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredCompanies.map(({ company, stats, primaryCurrency }) => (
                 <Link
                   key={company.slug}
                   href={`/companies/${company.slug}`}
-                  className="reveal bg-surface border border-border rounded-2xl p-5 hover:border-coral hover:shadow-sm transition-all cursor-pointer group flex flex-col justify-between h-full relative"
+                  className="reveal group flex flex-col justify-between rounded-2xl border border-border bg-surface p-5 shadow-sm transition-all hover:border-coral/50 hover:shadow-md hover:-translate-y-0.5"
                 >
                   <div>
-                    {/* Top Row: Favicon + Name + Verified Badge */}
                     <div className="flex items-start gap-3">
-                      <div className="border border-border p-0.5 rounded-lg bg-surface shrink-0">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-white">
                         <CompanyLogo
                           companyName={company.name}
                           companySlug={company.slug}
@@ -208,28 +210,27 @@ export default function CompaniesPage(): React.ReactElement {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-semibold text-airbnb truncate group-hover:text-coral transition-colors text-sm">
+                          <span className="truncate text-sm font-semibold text-airbnb transition-colors group-hover:text-coral">
                             {company.name}
                           </span>
                           <i
-                            className="ti ti-square-rounded-check-filled text-blue-500 text-base shrink-0"
+                            className="ti ti-square-rounded-check-filled text-coral text-base shrink-0"
                             title="Verified Employer"
                           />
                         </div>
                         {company.industry && (
-                          <span className="text-[10px] text-blue-600 bg-blue-50 rounded-full px-2 py-0.5 inline-block mt-0.5 font-bold uppercase tracking-wider">
+                          <span className="mt-1 inline-block rounded-full bg-coral-subtle px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-coral">
                             {company.industry}
                           </span>
                         )}
                       </div>
                     </div>
 
-                    {/* Median TC block */}
-                    <div className="mt-4">
-                      <span className="text-[10px] text-neutral uppercase font-semibold tracking-wide block">
+                    <div className="mt-5">
+                      <span className="block text-[10px] font-semibold uppercase tracking-wide text-neutral">
                         Median TC
                       </span>
-                      <span className="text-xl font-black text-data-blue">
+                      <span className="text-2xl font-bold text-data-blue tabular-nums">
                         {formatCurrency(
                           stats.median_total_compensation,
                           primaryCurrency,
@@ -240,23 +241,23 @@ export default function CompaniesPage(): React.ReactElement {
                     </div>
                   </div>
 
-                  {/* Location & Count Block + Footer */}
-                  <div className="mt-4 pt-3 border-t border-border/60">
-                    <div className="flex flex-col gap-1.5 text-xs text-neutral">
-                      <span className="flex items-center gap-1">
-                        <i className="ti ti-map-pin text-[10px] text-neutral-400" />
-                        <span className="truncate">{company.headquarters || 'India'}</span>
+                  <div className="mt-4 border-t border-border/60 pt-3">
+                    <div className="flex flex-col gap-1 text-xs text-neutral">
+                      <span className="flex items-center gap-1.5">
+                        <i className="ti ti-map-pin text-coral/70" />
+                        <span className="truncate">
+                          {company.headquarters || 'India'}
+                        </span>
                       </span>
-                      <span className="flex items-center gap-1">
-                        <i className="ti ti-briefcase text-[10px] text-neutral-400" />
+                      <span className="flex items-center gap-1.5">
+                        <i className="ti ti-briefcase text-coral/70" />
                         <span>
                           {stats.record_count}{' '}
                           {stats.record_count === 1 ? 'record' : 'records'}
                         </span>
                       </span>
                     </div>
-
-                    <span className="block mt-3 text-xs text-coral font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="mt-2 block text-xs font-bold text-coral opacity-0 transition-opacity group-hover:opacity-100">
                       View salaries →
                     </span>
                   </div>
@@ -285,7 +286,7 @@ export default function CompaniesPage(): React.ReactElement {
             </h2>
             <Link
               href="/compare"
-              className="animated-link text-sm text-coral font-semibold"
+              className="animated-link text-sm font-semibold text-coral"
             >
               View all →
             </Link>
@@ -298,7 +299,7 @@ export default function CompaniesPage(): React.ReactElement {
                 <Link
                   key={idx}
                   href={pair.href}
-                  className="bg-surface border border-border rounded-xl p-4 hover:border-coral transition-colors cursor-pointer block shadow-sm group"
+                  className="block rounded-xl border border-border bg-surface p-4 shadow-sm transition-colors hover:border-coral/50 group"
                 >
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
@@ -310,7 +311,7 @@ export default function CompaniesPage(): React.ReactElement {
                           logoUrl={`https://www.google.com/s2/favicons?domain=${pair.comp1.website || `${pair.comp1.slug}.com`}&sz=64`}
                           size="sm"
                         />
-                        <span className="text-sm font-semibold text-airbnb truncate group-hover:text-coral transition-colors">
+                        <span className="truncate text-sm font-semibold text-airbnb transition-colors group-hover:text-coral">
                           {pair.comp1.name}
                         </span>
                       </div>
@@ -328,7 +329,7 @@ export default function CompaniesPage(): React.ReactElement {
                           logoUrl={`https://www.google.com/s2/favicons?domain=${pair.comp2.website || `${pair.comp2.slug}.com`}&sz=64`}
                           size="sm"
                         />
-                        <span className="text-sm font-semibold text-airbnb truncate group-hover:text-coral transition-colors">
+                        <span className="truncate text-sm font-semibold text-airbnb transition-colors group-hover:text-coral">
                           {pair.comp2.name}
                         </span>
                       </div>
@@ -353,7 +354,7 @@ export default function CompaniesPage(): React.ReactElement {
             </h2>
             <Link
               href="/salaries"
-              className="animated-link text-sm text-coral font-semibold"
+              className="animated-link text-sm font-semibold text-coral"
             >
               View all →
             </Link>
@@ -364,13 +365,13 @@ export default function CompaniesPage(): React.ReactElement {
               <Link
                 key={idx}
                 href={cat.href}
-                className="bg-surface border border-border rounded-xl p-4 flex items-center gap-3 hover:border-coral transition-colors cursor-pointer shadow-sm group"
+                className="group flex items-center gap-3 rounded-xl border border-border bg-surface p-4 shadow-sm transition-colors hover:border-coral/50"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-coral/5 group-hover:bg-coral/15 transition-colors">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-coral-subtle transition-colors group-hover:bg-hover">
                   <i className={`ti ${cat.icon} text-coral text-lg`} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-airbnb truncate group-hover:text-coral transition-colors">
+                  <p className="truncate text-sm font-bold text-airbnb transition-colors group-hover:text-coral">
                     {cat.title}
                   </p>
                   <p className="text-[10px] text-neutral truncate mt-0.5">

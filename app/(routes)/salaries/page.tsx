@@ -256,7 +256,7 @@ export default async function SalariesPage({
             <div className="mb-2">
               <IconCurrencyRupee />
             </div>
-            <p className="text-2xl font-bold text-airbnb">{medianTC}</p>
+            <p className="text-2xl font-bold text-data-blue">{medianTC}</p>
             <p className="text-xs text-neutral uppercase tracking-wide mt-1">
               Median Total Pay
             </p>

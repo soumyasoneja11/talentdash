@@ -12,6 +12,9 @@ const TABS = [
   { id: 'qa', label: 'Q&A' },
 ];
 
+/** Fixed main nav (h-16) plus breathing room. */
+const SCROLL_OFFSET_PX = 80;
+
 export const CompanyTabs = (): React.ReactElement => {
   const [activeTab, setActiveTab] = useState('overview');
   const isClickScrolling = useRef(false);
@@ -19,21 +22,23 @@ export const CompanyTabs = (): React.ReactElement => {
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: '-120px 0px -50% 0px', // Trigger when section enters middle of viewport
+      rootMargin: `-${SCROLL_OFFSET_PX}px 0px -50% 0px`,
       threshold: 0,
     };
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       if (isClickScrolling.current) return;
 
-      // Find the entry that is intersecting
       const visibleEntry = entries.find((entry) => entry.isIntersecting);
       if (visibleEntry) {
         setActiveTab(visibleEntry.target.id);
       }
     };
 
-    const observer = new IntersectionObserver(handleIntersection, observerOptions);
+    const observer = new IntersectionObserver(
+      handleIntersection,
+      observerOptions
+    );
 
     TABS.forEach((tab) => {
       const el = document.getElementById(tab.id);
@@ -48,12 +53,10 @@ export const CompanyTabs = (): React.ReactElement => {
     const el = document.getElementById(id);
     if (el) {
       isClickScrolling.current = true;
-      // Subtract navbar/sticky tab heights for scroll offset
-      const yOffset = -144;
-      const y = el.getBoundingClientRect().top + window.scrollY + yOffset;
+      const y =
+        el.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_PX;
       window.scrollTo({ top: y, behavior: 'smooth' });
 
-      // Reset after smooth scroll finishes (roughly 800ms)
       setTimeout(() => {
         isClickScrolling.current = false;
       }, 850);
@@ -61,24 +64,26 @@ export const CompanyTabs = (): React.ReactElement => {
   };
 
   return (
-    <div className="border-b border-border bg-surface sticky top-20 z-30 px-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide -mb-px">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => handleTabClick(tab.id)}
-              className={`px-4 py-3 text-sm font-medium border-b-2 cursor-pointer transition-colors whitespace-nowrap ${
-                activeTab === tab.id
-                  ? 'text-airbnb border-coral font-semibold'
-                  : 'text-neutral border-transparent hover:text-airbnb hover:border-border'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="flex justify-center border-b border-border/60 bg-app-bg px-4 py-4">
+      <nav
+        aria-label="Company sections"
+        className="flex h-10 w-[min(640px,calc(100%-2rem))] items-center gap-0.5 overflow-x-auto rounded-full border border-coral/20 bg-surface px-1.5 shadow-md shadow-neutral/5 scrollbar-hide"
+      >
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => handleTabClick(tab.id)}
+            className={`cursor-pointer whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${
+              activeTab === tab.id
+                ? 'bg-coral text-white shadow-sm shadow-coral/20'
+                : 'text-soft-dark hover:bg-hover hover:text-airbnb'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </nav>
     </div>
   );
 };

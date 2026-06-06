@@ -121,8 +121,9 @@ export function buildCompanyPageMeta(
     medianInr = convertCurrency(stats.median_total_compensation, 'USD', 'INR');
   }
 
-  const compactVal = formatCurrency(medianInr, 'INR', 'INR', { compact: true });
-  const compactMedian = compactVal.replace(/^₹/, '');
+  const compactMedian = formatCurrency(medianInr, 'INR', 'INR', {
+    compact: true,
+  });
 
   const median = Math.round(medianInr).toLocaleString('en-IN');
 
@@ -130,7 +131,7 @@ export function buildCompanyPageMeta(
     (count) => count > 0
   ).length;
 
-  const title = `${company.name} Salaries — ₹${compactMedian} Median TC | TalentDash`;
+  const title = `${company.name} Salaries — ${compactMedian} Median TC | TalentDash`;
   const description = `Verified salary data for ${company.name}. ${stats.record_count} records. Median total compensation ₹${median} across ${levelCount} levels.`;
   const canonical = `https://talentdash.com/companies/${company.slug}`;
 

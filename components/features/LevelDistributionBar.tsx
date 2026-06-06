@@ -40,7 +40,7 @@ const getLevelVibrantBg = (level: LevelEnum): string => {
     case 'IC4':
       return 'bg-cyan-500';
     case 'IC5':
-      return 'bg-teal-500';
+      return 'bg-violet-600';
     default:
       return 'bg-slate-400';
   }

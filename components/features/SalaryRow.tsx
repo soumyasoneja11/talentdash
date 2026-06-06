@@ -85,34 +85,41 @@ export const SalaryRow = ({
       <td className="border-b border-border py-3 px-4 align-middle text-neutral whitespace-nowrap">
         {formatExperience(record.experience_years)}
       </td>
-      <td className="border-b border-border py-3 px-4 align-middle text-soft-dark whitespace-nowrap">
-        {formatCurrency(record.base_salary, record.currency, displayCurrency)}
+      <td className="border-b border-border py-3 px-4 align-middle text-soft-dark whitespace-nowrap tabular-nums">
+        {formatCurrency(record.base_salary, record.currency, displayCurrency, {
+          compact: true,
+        })}
       </td>
-      <td className="border-b border-border py-3 px-4 align-middle whitespace-nowrap">
+      <td className="border-b border-border py-3 px-4 align-middle whitespace-nowrap tabular-nums">
         {record.bonus === 0 ? (
           <span className="text-neutral">&mdash;</span>
         ) : (
           <span className="text-soft-dark">
-            {formatCurrency(record.bonus, record.currency, displayCurrency)}
+            {formatCurrency(record.bonus, record.currency, displayCurrency, {
+              compact: true,
+            })}
           </span>
         )}
       </td>
-      <td className="border-b border-border py-3 px-4 align-middle whitespace-nowrap">
+      <td className="border-b border-border py-3 px-4 align-middle whitespace-nowrap tabular-nums">
         {record.stock === 0 ? (
           <span className="text-neutral">&mdash;</span>
         ) : (
           <span className="text-soft-dark">
-            {formatCurrency(record.stock, record.currency, displayCurrency)}
+            {formatCurrency(record.stock, record.currency, displayCurrency, {
+              compact: true,
+            })}
           </span>
         )}
       </td>
-      <td className="border-b border-border py-3 px-4 align-middle whitespace-nowrap">
+      <td className="border-b border-border py-3 px-4 align-middle whitespace-nowrap tabular-nums">
         <div className="flex items-center gap-2">
-          <span className="tabular-nums text-base font-bold text-data-blue transition-colors duration-150 group-hover:text-teal-brand">
+          <span className="text-base font-bold text-data-blue transition-colors duration-150 group-hover:text-data-blue/80">
             {formatCurrency(
               record.total_compensation,
               record.currency,
-              displayCurrency
+              displayCurrency,
+              { compact: true }
             )}
           </span>
           {showBreakdown ? (

@@ -42,22 +42,22 @@ const formatAmount = (
 
   if (currency === 'INR') {
     if (compact) {
-      if (amount >= 10000000) {
-        return `₹${formatCompactNumber(amount / 10000000, 'Cr')}`;
+      if (amount >= 10_000_000) {
+        return `${formatCompactNumber(amount / 10_000_000, 'Cr')} ₹`;
       }
-      if (amount >= 100000) {
-        return `₹${formatCompactNumber(amount / 100000, 'L')}`;
+      if (amount >= 100_000) {
+        return `${formatCompactNumber(amount / 100_000, 'L')} ₹`;
       }
     }
     return `₹${amount.toLocaleString('en-IN')}`;
   }
 
   if (compact) {
-    if (amount >= 1000000) {
-      return `$${formatCompactNumber(amount / 1000000, 'M')}`;
+    if (amount >= 1_000_000) {
+      return `${formatCompactNumber(amount / 1_000_000, 'M')} $`;
     }
-    if (amount >= 1000) {
-      return `$${formatCompactNumber(amount / 1000, 'K')}`;
+    if (amount >= 1_000) {
+      return `${formatCompactNumber(amount / 1_000, 'K')} $`;
     }
   }
 

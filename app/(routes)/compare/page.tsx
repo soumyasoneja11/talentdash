@@ -159,54 +159,61 @@ function ComparePageContent(): React.ReactElement {
         paramS2 === null));
 
   return (
-    <div className="bg-app-bg min-h-screen py-8">
-      <div className="mx-auto max-w-4xl px-4 space-y-6">
-        
-        {/* ---- Title + Currency Toggle Row ---- */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-airbnb tracking-tight">
-              Compare Salary Records
-            </h1>
-            <p className="mt-1 text-sm text-neutral">
-              Select any two records from the salary database to compare compensation side-by-side.
-            </p>
-          </div>
+    <div className="bg-app-bg min-h-screen">
+      <div className="border-b border-border/60 bg-gradient-to-br from-coral-subtle/60 via-surface to-app-bg">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-coral mb-2">
+                Side-by-Side
+              </p>
+              <h1 className="text-3xl font-bold text-airbnb tracking-tight">
+                Compare Salary Records
+              </h1>
+              <p className="mt-2 text-sm text-neutral max-w-xl">
+                Select any two records from the salary database to benchmark
+                compensation side-by-side.
+              </p>
+            </div>
 
-          <div className="inline-flex overflow-hidden rounded-full border border-border text-xs font-semibold shrink-0 shadow-sm">
-            <button
-              type="button"
-              onClick={() => setDisplayCurrency('INR')}
-              aria-label="Show salaries in Indian Rupees"
-              className={`px-3.5 py-1.5 transition-colors cursor-pointer ${
-                displayCurrency === 'INR'
-                  ? 'bg-coral text-white'
-                  : 'bg-surface text-soft-dark hover:bg-hover'
-              }`}
-            >
-              ₹ INR
-            </button>
-            <button
-              type="button"
-              onClick={() => setDisplayCurrency('USD')}
-              aria-label="Show salaries in US Dollars"
-              className={`px-3.5 py-1.5 transition-colors cursor-pointer ${
-                displayCurrency === 'USD'
-                  ? 'bg-coral text-white'
-                  : 'bg-surface text-soft-dark hover:bg-hover'
-              }`}
-            >
-              $ USD
-            </button>
+            <div className="inline-flex shrink-0 overflow-hidden rounded-full border border-border text-xs font-semibold shadow-sm">
+              <button
+                type="button"
+                onClick={() => setDisplayCurrency('INR')}
+                aria-label="Show salaries in Indian Rupees"
+                className={`cursor-pointer px-4 py-2 transition-colors ${
+                  displayCurrency === 'INR'
+                    ? 'bg-coral text-white'
+                    : 'bg-surface text-soft-dark hover:bg-hover'
+                }`}
+              >
+                ₹ INR
+              </button>
+              <button
+                type="button"
+                onClick={() => setDisplayCurrency('USD')}
+                aria-label="Show salaries in US Dollars"
+                className={`cursor-pointer px-4 py-2 transition-colors ${
+                  displayCurrency === 'USD'
+                    ? 'bg-coral text-white'
+                    : 'bg-surface text-soft-dark hover:bg-hover'
+                }`}
+              >
+                $ USD
+              </button>
+            </div>
           </div>
         </div>
+      </div>
+
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10 space-y-6">
 
         {/* ---- Company context banner (from company page "Compare" button) ---- */}
         {showCompanyContext && (
-          <div className="rounded-xl border border-data-blue/30 bg-data-blue/5 px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
+          <div className="rounded-xl border border-coral/30 bg-coral-subtle px-4 py-3 text-xs font-semibold text-soft-dark shadow-sm">
             Comparing from{' '}
-            <span className="text-coral font-bold">{companyFromC1!.name}</span>. Change
-            selection below.
+            <span className="font-bold text-coral">{companyFromC1!.name}</span>.
+            Change selection below.
           </div>
         )}
 
@@ -218,7 +225,7 @@ function ComparePageContent(): React.ReactElement {
         )}
 
         {/* ---- Selectors Row ---- */}
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:gap-4 bg-surface border border-border rounded-2xl p-5 shadow-sm">
+        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-6 shadow-sm md:flex-row md:items-end md:gap-4">
           {/* Record 1 Selector */}
           <div className="flex-1 w-full font-sans">
             <label
@@ -231,7 +238,7 @@ function ComparePageContent(): React.ReactElement {
               id="compare-select-1"
               value={record1?.id ?? ''}
               onChange={handleSelect1}
-              className="w-full border border-border rounded-xl px-4 py-3 text-sm text-airbnb bg-surface focus:border-coral focus:outline-none cursor-pointer"
+              className="w-full cursor-pointer rounded-xl border border-border bg-surface px-4 py-3 text-sm text-airbnb focus:border-coral focus:outline-none"
             >
               <option value="" disabled>
                 Select a salary record...
@@ -246,7 +253,7 @@ function ComparePageContent(): React.ReactElement {
 
           {/* VS Divider */}
           <div className="flex items-center justify-center shrink-0 md:pb-1 select-none">
-            <div className="bg-surface border border-border rounded-full w-10 h-10 flex items-center justify-center text-xs font-bold text-neutral">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-coral/30 bg-coral-subtle text-xs font-bold text-coral">
               vs
             </div>
           </div>
@@ -263,7 +270,7 @@ function ComparePageContent(): React.ReactElement {
               id="compare-select-2"
               value={record2?.id ?? ''}
               onChange={handleSelect2}
-              className="w-full border border-border rounded-xl px-4 py-3 text-sm text-airbnb bg-surface focus:border-coral focus:outline-none cursor-pointer"
+              className="w-full cursor-pointer rounded-xl border border-border bg-surface px-4 py-3 text-sm text-airbnb focus:border-coral focus:outline-none"
             >
               <option value="" disabled>
                 Select a salary record...
@@ -296,7 +303,7 @@ function ComparePageContent(): React.ReactElement {
               <button
                 type="button"
                 onClick={handleShare}
-                className="border border-border rounded-lg px-4 py-2 text-sm text-neutral hover:bg-hover flex items-center gap-2 cursor-pointer transition-colors shadow-sm bg-surface font-semibold"
+                className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-airbnb shadow-sm transition-colors hover:border-coral/40 hover:bg-coral-subtle"
               >
                 {copied ? (
                   <>

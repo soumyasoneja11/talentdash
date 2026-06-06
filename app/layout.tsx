@@ -1,8 +1,10 @@
 // RSC — React Server Component. No client-side JavaScript.
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Link from 'next/link';
+import { Footer } from '@/components/Footer';
+import { MainNav } from '@/components/MainNav';
 import { RevealObserver } from '@/components/RevealObserver';
+import { ScrollToTop } from '@/components/ScrollToTop';
 import './globals.css';
 
 const inter = Inter({
@@ -21,13 +23,6 @@ export const viewport = {
   initialScale: 1,
 };
 
-const NAV_LINKS = [
-  { href: '/salaries', label: 'Salaries' },
-  { href: '/companies', label: 'Companies' },
-  { href: '/compare', label: 'Compare' },
-  { href: '/tools', label: 'Tools' },
-] as const;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -35,36 +30,12 @@ export default function RootLayout({
 }>): React.ReactElement {
   return (
     <html lang="en" className={inter.className}>
-      <body className="min-h-screen bg-app-bg">
-        <nav className="animate-fade-in fixed top-4 left-1/2 -translate-x-1/2 z-50 flex h-12 w-[min(800px,100%-2rem)] items-center justify-between border border-teal-brand/20 bg-surface/95 backdrop-blur-md px-6 rounded-full shadow-md shadow-neutral/5 transition-all">
-          <Link
-            href="/"
-            className="text-sm font-bold text-airbnb tracking-tight hover:opacity-80 transition-opacity"
-          >
-            <span className="text-teal-brand">T</span>alentDash
-          </Link>
+      <body className="flex min-h-screen flex-col bg-app-bg">
+        <MainNav />
 
-          <div className="flex items-center gap-5">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="animated-link text-xs font-semibold text-soft-dark hover:text-airbnb transition-colors duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-
-          <Link
-            href="/submit"
-            className="rounded-full bg-teal-brand px-3.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-teal-brand/20 hover:bg-deep-teal transition-colors duration-200 whitespace-nowrap"
-          >
-            Submit
-          </Link>
-        </nav>
-
-        <main className="min-h-screen pt-24">{children}</main>
+        <main className="flex-1 pt-16">{children}</main>
+        <Footer />
+        <ScrollToTop />
         <RevealObserver />
       </body>
     </html>

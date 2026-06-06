@@ -19,7 +19,7 @@ const PREMIUM_COLORS = [
   'bg-violet-500',
   'bg-fuchsia-500',
   'bg-indigo-500',
-  'bg-teal-500',
+  'bg-coral',
 ];
 
 const getDeterministicColor = (slug: string): string => {

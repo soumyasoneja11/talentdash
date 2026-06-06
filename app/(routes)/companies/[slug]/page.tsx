@@ -190,14 +190,13 @@ export default async function CompanyPage({
       {/* Redesigned Premium Company Header */}
       <CompanyHeader company={company} recordCount={stats.record_count} />
 
-      {/* Interactive sticky tabs strip */}
       <CompanyTabs />
 
       {/* Main Grid content */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6 space-y-6">
         
         {/* ==================== OVERVIEW SECTION ==================== */}
-        <div id="overview" className="scroll-mt-36 space-y-6">
+        <div id="overview" className="scroll-mt-24 space-y-6">
           
           {/* 3-Column Info Panel */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -393,7 +392,7 @@ export default async function CompanyPage({
         </div>
 
         {/* ==================== SALARIES SECTION ==================== */}
-        <div id="salaries" className="scroll-mt-36 space-y-6">
+        <div id="salaries" className="scroll-mt-24 space-y-6">
           
           {/* Salary by Role Consolidated Table */}
           <section className="rounded-2xl border border-border bg-surface p-6 shadow-sm space-y-4">
@@ -512,7 +511,7 @@ export default async function CompanyPage({
         </div>
 
         {/* ==================== REVIEW SECTION PLACEHOLDER ==================== */}
-        <section id="reviews" className="rounded-2xl border border-border bg-surface p-6 shadow-sm scroll-mt-36">
+        <section id="reviews" className="rounded-2xl border border-border bg-surface p-6 shadow-sm scroll-mt-24">
           <h2 className="mb-4 text-lg font-bold text-airbnb tracking-tight">Reviews</h2>
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <i className="ti ti-message-2 text-neutral text-3xl mb-2" />
@@ -522,7 +521,7 @@ export default async function CompanyPage({
         </section>
 
         {/* ==================== BENEFITS SECTION PLACEHOLDER ==================== */}
-        <section id="benefits" className="rounded-2xl border border-border bg-surface p-6 shadow-sm scroll-mt-36">
+        <section id="benefits" className="rounded-2xl border border-border bg-surface p-6 shadow-sm scroll-mt-24">
           <h2 className="mb-4 text-lg font-bold text-airbnb tracking-tight">Benefits</h2>
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <i className="ti ti-gift text-neutral text-3xl mb-2" />
@@ -532,7 +531,7 @@ export default async function CompanyPage({
         </section>
 
         {/* ==================== JOBS SECTION PLACEHOLDER ==================== */}
-        <section id="jobs" className="rounded-2xl border border-border bg-surface p-6 shadow-sm scroll-mt-36">
+        <section id="jobs" className="rounded-2xl border border-border bg-surface p-6 shadow-sm scroll-mt-24">
           <h2 className="mb-4 text-lg font-bold text-airbnb tracking-tight">Jobs</h2>
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <i className="ti ti-briefcase text-neutral text-3xl mb-2" />
@@ -542,7 +541,7 @@ export default async function CompanyPage({
         </section>
 
         {/* ==================== INTERVIEWS SECTION PLACEHOLDER ==================== */}
-        <section id="interviews" className="rounded-2xl border border-border bg-surface p-6 shadow-sm scroll-mt-36">
+        <section id="interviews" className="rounded-2xl border border-border bg-surface p-6 shadow-sm scroll-mt-24">
           <h2 className="mb-4 text-lg font-bold text-airbnb tracking-tight">Interviews</h2>
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <i className="ti ti-help text-neutral text-3xl mb-2" />
@@ -552,7 +551,7 @@ export default async function CompanyPage({
         </section>
 
         {/* ==================== Q&A SECTION PLACEHOLDER ==================== */}
-        <section id="qa" className="rounded-2xl border border-border bg-surface p-6 shadow-sm scroll-mt-36">
+        <section id="qa" className="rounded-2xl border border-border bg-surface p-6 shadow-sm scroll-mt-24">
           <h2 className="mb-4 text-lg font-bold text-airbnb tracking-tight">Q&A</h2>
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <i className="ti ti-message-dots text-neutral text-3xl mb-2" />
