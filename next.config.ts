@@ -43,16 +43,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/salaries',
-        permanent: false,
-      },
-    ];
-  },
 };
 
 export default nextConfig;
