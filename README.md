@@ -2,7 +2,12 @@
 
 ## Live URL
 
-[Not yet deployed — see local setup]
+**Production:** [https://talentdash-three.vercel.app](https://talentdash-three.vercel.app)
+
+- `/` redirects to `/salaries` (primary trial deliverable)
+- `/companies/[slug]` — 27 pre-rendered company pages at build time
+- `/compare` — static shell with client-side comparison UI
+- No environment variables required (mock data mode)
 
 ## Quick Start (under 5 minutes)
 
