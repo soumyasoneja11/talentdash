@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Link from 'next/link';
+import { RevealObserver } from '@/components/RevealObserver';
 import './globals.css';
 
 const inter = Inter({
@@ -64,27 +65,7 @@ export default function RootLayout({
         </nav>
 
         <main className="min-h-screen pt-24">{children}</main>
-
-        <script dangerouslySetInnerHTML={{ __html: `
-          (function() {
-            var io = new IntersectionObserver(function(entries) {
-              entries.forEach(function(e) {
-                if (e.isIntersecting) {
-                  e.target.classList.add('revealed');
-                  io.unobserve(e.target);
-                }
-              });
-            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-            function observe() {
-              document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
-            }
-            if (document.readyState === 'loading') {
-              document.addEventListener('DOMContentLoaded', observe);
-            } else {
-              observe();
-            }
-          })();
-        ` }} />
+        <RevealObserver />
       </body>
     </html>
   );

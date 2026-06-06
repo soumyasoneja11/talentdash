@@ -4,7 +4,6 @@ import Link from 'next/link';
 import {
   SALARY_RECORDS,
   COMPANIES,
-  computeCompanyStats,
   getSalariesByCompanySlug,
 } from '@/lib/mock-data';
 import { formatCurrency, computeMedian } from '@/lib/utils';
@@ -101,6 +100,9 @@ const getSalaryRange = (): { min: string; max: string } => {
 
 export default function HomePage(): React.ReactElement {
   const totalRecords = SALARY_RECORDS.length;
+  const verifiedRecords = SALARY_RECORDS.filter(
+    (record) => record.is_verified
+  ).length;
   const uniqueCompanies = COMPANIES.length;
   const uniqueCities = new Set(SALARY_RECORDS.map((r) => r.location)).size;
   const salaryRange = getSalaryRange();
@@ -177,7 +179,7 @@ export default function HomePage(): React.ReactElement {
             {/* Stat 1 */}
             <div className="reveal flex flex-col items-center py-5 border-r border-border">
               <span className="text-3xl font-bold text-airbnb">
-                {totalRecords}+
+                {verifiedRecords}+
               </span>
               <span className="text-sm text-neutral mt-0.5">
                 Verified Salary Records

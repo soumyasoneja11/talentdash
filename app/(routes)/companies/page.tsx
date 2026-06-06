@@ -12,7 +12,7 @@ import {
 } from '@/lib/mock-data';
 import { formatCurrency } from '@/lib/utils';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
-import type { Company, SalaryRecord } from '@/types/salary';
+import type { SalaryRecord } from '@/types/salary';
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                           */

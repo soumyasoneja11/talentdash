@@ -117,6 +117,26 @@ export const convertCurrency = (
 };
 
 /**
+ * Normalizes a record amount into the chosen display currency (INR or USD).
+ */
+export const toDisplayAmount = (
+  amount: number,
+  recordCurrency: CurrencyEnum,
+  displayCurrency: 'INR' | 'USD'
+): number => {
+  const safeAmount = normalizeAmount(amount);
+  if (recordCurrency === displayCurrency) {
+    return safeAmount;
+  }
+  if (isInrOrUsd(recordCurrency) && isInrOrUsd(displayCurrency)) {
+    return convertCurrency(safeAmount, recordCurrency, displayCurrency);
+  }
+  return displayCurrency === 'INR'
+    ? safeAmount
+    : convertCurrency(safeAmount, 'INR', 'USD');
+};
+
+/**
  * Computes the statistical median for a numeric array.
  */
 export const computeMedian = (values: number[]): number => {
@@ -251,12 +271,7 @@ export const parseSearchParams = (
   if (location) {
     filters.location = location;
   }
-  if (
-    currency === 'INR' ||
-    currency === 'USD' ||
-    currency === 'GBP' ||
-    currency === 'EUR'
-  ) {
+  if (currency === 'INR' || currency === 'USD') {
     filters.currency = currency;
   }
   if (

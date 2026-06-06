@@ -49,7 +49,7 @@ export const CompanyTabs = (): React.ReactElement => {
     if (el) {
       isClickScrolling.current = true;
       // Subtract navbar/sticky tab heights for scroll offset
-      const yOffset = -120; 
+      const yOffset = -144;
       const y = el.getBoundingClientRect().top + window.scrollY + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
 
@@ -61,7 +61,7 @@ export const CompanyTabs = (): React.ReactElement => {
   };
 
   return (
-    <div className="border-b border-border bg-surface sticky top-0 z-30 px-6">
+    <div className="border-b border-border bg-surface sticky top-20 z-30 px-6">
       <div className="mx-auto max-w-7xl">
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide -mb-px">
           {TABS.map((tab) => (

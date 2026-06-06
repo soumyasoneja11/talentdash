@@ -60,8 +60,19 @@ function HikeCalculatorContent(): React.ReactElement {
     setHikePercent(currentSalary > 0 ? ((val - currentSalary) / currentSalary) * 100 : 0);
   };
 
+  const isPayCut = newSalary < currentSalary;
+
   // Industry Benchmarks Logic
   const benchmark = useMemo(() => {
+    if (hikePercent < 0) {
+      return {
+        label: 'Pay Cut',
+        colorClass: 'bg-red-50 text-error border-red-200',
+        icon: 'ti-trending-down',
+        advice:
+          'Your target salary is below your current CTC. This represents a pay cut, not a hike — factor in role, equity, or other benefits before accepting.',
+      };
+    }
     if (hikePercent < 10) {
       return {
         label: 'Below Average',
@@ -343,6 +354,14 @@ function HikeCalculatorContent(): React.ReactElement {
                 </span>
               </div>
             </div>
+
+            {isPayCut && (
+              <div className="rounded-xl border border-error/30 bg-red-50 px-4 py-3 text-xs font-semibold text-error">
+                This is a pay cut of{' '}
+                {formatCurrency(currentSalary - newSalary, 'INR', 'INR')} (
+                {Math.abs(hikePercent).toFixed(1)}% decrease), not a hike.
+              </div>
+            )}
 
             {/* Large Hike Percentage & Benchmark Pill */}
             <div className="bg-app-bg/50 border border-border/60 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">

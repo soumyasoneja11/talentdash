@@ -63,11 +63,7 @@ export const ComparisonTable = ({
     (record1.bonus === 0 && record1.stock === 0) ||
     (record2.bonus === 0 && record2.stock === 0);
 
-  const renderValueCell = (
-    val: number,
-    otherVal: number,
-    isRecord1: boolean
-  ) => {
+  const renderValueCell = (val: number, otherVal: number) => {
     if (eitherHasNoBonusOrStock && val === 0) {
       return <span className="text-neutral">—</span>;
     }
@@ -79,23 +75,15 @@ export const ComparisonTable = ({
       <div className="flex items-center justify-between gap-2 w-full">
         <span>{formatCurrency(val, displayCurrency, displayCurrency)}</span>
         {showDelta && (
-          isRecord1 ? (
-            // Record 1 is higher, meaning Record 2 is lower (negative change from R1 to R2)
-            <span className="text-[10px] bg-red-50 text-error px-1.5 py-0.5 rounded font-bold whitespace-nowrap shrink-0">
-              −{formatCurrency(val - otherVal, displayCurrency, displayCurrency, { compact: true })}
-            </span>
-          ) : (
-            // Record 2 is higher, meaning Record 2 is higher (positive change from R1 to R2)
-            <span className="text-[10px] bg-green-50 text-success px-1.5 py-0.5 rounded font-bold whitespace-nowrap shrink-0">
-              +{formatCurrency(val - otherVal, displayCurrency, displayCurrency, { compact: true })}
-            </span>
-          )
+          <span className="text-[10px] bg-green-50 text-success px-1.5 py-0.5 rounded font-bold whitespace-nowrap shrink-0">
+            +{formatCurrency(val - otherVal, displayCurrency, displayCurrency, { compact: true })}
+          </span>
         )}
       </div>
     );
   };
 
-  const renderExpCell = (exp: number, otherExp: number, isRecord1: boolean) => {
+  const renderExpCell = (exp: number, otherExp: number) => {
     const isHigher = exp > otherExp;
     const showDelta = isHigher && exp !== otherExp;
     const diff = exp - otherExp;
@@ -106,15 +94,9 @@ export const ComparisonTable = ({
       <div className="flex items-center justify-between gap-2 w-full">
         <span>{formatExperience(exp)}</span>
         {showDelta && (
-          isRecord1 ? (
-            <span className="text-[10px] bg-red-50 text-error px-1.5 py-0.5 rounded font-bold">
-              −{abs} {suffix}
-            </span>
-          ) : (
-            <span className="text-[10px] bg-green-50 text-success px-1.5 py-0.5 rounded font-bold">
-              +{abs} {suffix}
-            </span>
-          )
+          <span className="text-[10px] bg-green-50 text-success px-1.5 py-0.5 rounded font-bold">
+            +{abs} {suffix}
+          </span>
         )}
       </div>
     );
@@ -244,10 +226,10 @@ export const ComparisonTable = ({
             Experience
           </div>
           <div className="px-4 py-3 text-sm text-airbnb">
-            {renderExpCell(record1.experience_years, record2.experience_years, true)}
+            {renderExpCell(record1.experience_years, record2.experience_years)}
           </div>
           <div className="px-4 py-3 text-sm text-airbnb">
-            {renderExpCell(record2.experience_years, record1.experience_years, false)}
+            {renderExpCell(record2.experience_years, record1.experience_years)}
           </div>
         </div>
 
@@ -257,10 +239,10 @@ export const ComparisonTable = ({
             Base Salary
           </div>
           <div className="px-4 py-3 text-sm text-airbnb">
-            {renderValueCell(r1.base, r2.base, true)}
+            {renderValueCell(r1.base, r2.base)}
           </div>
           <div className="px-4 py-3 text-sm text-airbnb">
-            {renderValueCell(r2.base, r1.base, false)}
+            {renderValueCell(r2.base, r1.base)}
           </div>
         </div>
 
@@ -270,10 +252,10 @@ export const ComparisonTable = ({
             Bonus
           </div>
           <div className="px-4 py-3 text-sm text-airbnb">
-            {renderValueCell(r1.bonus, r2.bonus, true)}
+            {renderValueCell(r1.bonus, r2.bonus)}
           </div>
           <div className="px-4 py-3 text-sm text-airbnb">
-            {renderValueCell(r2.bonus, r1.bonus, false)}
+            {renderValueCell(r2.bonus, r1.bonus)}
           </div>
         </div>
 
@@ -283,10 +265,10 @@ export const ComparisonTable = ({
             Stock / Equity
           </div>
           <div className="px-4 py-3 text-sm text-airbnb">
-            {renderValueCell(r1.stock, r2.stock, true)}
+            {renderValueCell(r1.stock, r2.stock)}
           </div>
           <div className="px-4 py-3 text-sm text-airbnb">
-            {renderValueCell(r2.stock, r1.stock, false)}
+            {renderValueCell(r2.stock, r1.stock)}
           </div>
         </div>
 
@@ -298,8 +280,8 @@ export const ComparisonTable = ({
           <div className="px-4 py-3.5 text-lg font-bold text-data-blue flex items-center justify-between gap-2">
             <span>{formatCurrency(r1.tc, displayCurrency, displayCurrency)}</span>
             {r1.tc > r2.tc && (
-              <span className="text-[10px] bg-red-50 text-error px-1.5 py-0.5 rounded font-bold whitespace-nowrap shrink-0 font-sans">
-                −{formatCurrency(r1.tc - r2.tc, displayCurrency, displayCurrency, { compact: true })}
+              <span className="text-[10px] bg-green-50 text-success px-1.5 py-0.5 rounded font-bold whitespace-nowrap shrink-0 font-sans">
+                +{formatCurrency(r1.tc - r2.tc, displayCurrency, displayCurrency, { compact: true })}
               </span>
             )}
           </div>

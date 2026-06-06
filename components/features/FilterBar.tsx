@@ -1,7 +1,7 @@
 // 'use client' — justified because: handles interactive filtering, local input state, and uses Next.js router/navigation functions.
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import type { CurrencyEnum, LevelEnum, SalaryFilters } from '@/types/salary';
 import { buildSearchParams, cn, getLevelBadgeStyle } from '@/lib/utils';
@@ -22,9 +22,9 @@ type FilterState = {
 };
 
 const LEVEL_GROUPS: { label: string; levels: LevelEnum[] }[] = [
-  { label: 'IC', levels: ['L3', 'L4', 'L5', 'L6'] },
-  { label: 'SDE', levels: ['SDE_I', 'SDE_II', 'SDE_III'] },
-  { label: 'Senior', levels: ['STAFF', 'PRINCIPAL', 'IC4', 'IC5'] },
+  { label: 'IC', levels: ['L3', 'L4', 'L5', 'L6', 'IC4'] },
+  { label: 'SDE', levels: ['SDE_I', 'SDE_II', 'SDE_III', 'IC5'] },
+  { label: 'Senior', levels: ['STAFF', 'PRINCIPAL'] },
 ];
 
 const toFilterState = (filters: Partial<SalaryFilters>): FilterState => ({
@@ -35,7 +35,19 @@ const toFilterState = (filters: Partial<SalaryFilters>): FilterState => ({
   currency: filters.currency === 'USD' ? 'USD' : 'INR',
 });
 
-const toSalaryFilters = (state: FilterState): Partial<SalaryFilters> => {
+const serializeFilterState = (state: FilterState): string =>
+  JSON.stringify({
+    company: state.company,
+    role: state.role,
+    levels: [...state.levels].sort(),
+    location: state.location,
+    currency: state.currency,
+  });
+
+const toSalaryFilters = (
+  state: FilterState,
+  sort?: string
+): Partial<SalaryFilters> => {
   const filters: Partial<SalaryFilters> = {};
 
   if (state.company.trim()) {
@@ -53,6 +65,9 @@ const toSalaryFilters = (state: FilterState): Partial<SalaryFilters> => {
   if (state.currency) {
     filters.currency = state.currency as CurrencyEnum;
   }
+  if (sort) {
+    filters.sort = sort;
+  }
 
   return filters;
 };
@@ -65,7 +80,7 @@ const countActiveFilters = (state: FilterState): number =>
 
 export const FilterBar = ({
   initialFilters,
-  companies: _companies,
+  companies,
   roles,
   locations,
 }: FilterBarProps): React.ReactElement => {
@@ -80,10 +95,40 @@ export const FilterBar = ({
   );
   const isFirstRender = useRef(true);
   const skipNextPush = useRef(false);
+  const lastSyncedUrlKey = useRef('');
 
+  const urlFiltersKey = useMemo(
+    () =>
+      JSON.stringify({
+        company: initialFilters.company ?? '',
+        role: initialFilters.role ?? '',
+        levels: [...(initialFilters.level ?? [])].sort(),
+        location: initialFilters.location ?? '',
+        currency: initialFilters.currency === 'USD' ? 'USD' : 'INR',
+      }),
+    [
+      initialFilters.company,
+      initialFilters.role,
+      initialFilters.level,
+      initialFilters.location,
+      initialFilters.currency,
+    ]
+  );
+
+  const sortedCompanies = [...companies].sort((a, b) => a.localeCompare(b));
   const sortedRoles = [...roles].sort((a, b) => a.localeCompare(b));
   const sortedLocations = [...locations].sort((a, b) => a.localeCompare(b));
   const activeFilterCount = countActiveFilters(filters);
+
+  useEffect(() => {
+    if (urlFiltersKey === lastSyncedUrlKey.current) {
+      return;
+    }
+    lastSyncedUrlKey.current = urlFiltersKey;
+    const next = toFilterState(initialFilters);
+    setFilters(next);
+    setCompanyInput(next.company);
+  }, [urlFiltersKey, initialFilters]);
 
   useEffect(() => {
     if (companyInput === filters.company) {
@@ -109,11 +154,13 @@ export const FilterBar = ({
       return;
     }
 
-    const query = buildSearchParams(toSalaryFilters(filters));
+    const query = buildSearchParams(
+      toSalaryFilters(filters, initialFilters.sort)
+    );
     const basePath = pathname.startsWith('/salaries') ? pathname : '/salaries';
     const url = query ? `${basePath}?${query}` : basePath;
     router.push(url, { scroll: false });
-  }, [filters, pathname, router]);
+  }, [filters, pathname, router, initialFilters.sort]);
 
   const toggleLevel = (level: LevelEnum): void => {
     setFilters((prev) => ({
@@ -126,6 +173,13 @@ export const FilterBar = ({
 
   const handleClearAll = (): void => {
     skipNextPush.current = true;
+    lastSyncedUrlKey.current = serializeFilterState({
+      company: '',
+      role: '',
+      levels: [],
+      location: '',
+      currency: 'INR',
+    });
     setCompanyInput('');
     setFilters({
       company: '',
@@ -152,15 +206,23 @@ export const FilterBar = ({
           <input
             id="filter-company"
             type="text"
+            list="filter-company-list"
             value={companyInput}
             onChange={(event) => setCompanyInput(event.target.value)}
             placeholder="Search company..."
             className={cn(
               'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface placeholder:text-neutral focus:border-teal-brand focus:outline-none w-full',
-              companyInput.trim() ? 'border-teal-brand/60 bg-teal-subtle/50' : 'border-border'
+              companyInput.trim()
+                ? 'border-teal-brand/60 bg-teal-subtle/50'
+                : 'border-border'
             )}
             aria-label="Search company"
           />
+          <datalist id="filter-company-list">
+            {sortedCompanies.map((company) => (
+              <option key={company} value={company} />
+            ))}
+          </datalist>
         </div>
 
         {/* Role Filter */}
@@ -179,7 +241,9 @@ export const FilterBar = ({
             }
             className={cn(
               'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface focus:border-teal-brand focus:outline-none w-full',
-              filters.role ? 'border-teal-brand/60 bg-teal-subtle/50' : 'border-border'
+              filters.role
+                ? 'border-teal-brand/60 bg-teal-subtle/50'
+                : 'border-border'
             )}
             aria-label="Filter by role"
           >
@@ -208,7 +272,9 @@ export const FilterBar = ({
             }
             className={cn(
               'border rounded-lg px-3 py-2 text-sm text-airbnb bg-surface focus:border-teal-brand focus:outline-none w-full',
-              filters.location ? 'border-teal-brand/60 bg-teal-subtle/50' : 'border-border'
+              filters.location
+                ? 'border-teal-brand/60 bg-teal-subtle/50'
+                : 'border-border'
             )}
             aria-label="Filter by location"
           >

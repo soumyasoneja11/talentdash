@@ -7,7 +7,12 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Pagination } from '@/components/ui/Pagination';
 import { filterAndSortRecords } from '@/lib/filter-utils';
 import { SALARY_RECORDS } from '@/lib/mock-data';
-import { parseSearchParams, computeMedian, formatCurrency } from '@/lib/utils';
+import {
+  parseSearchParams,
+  computeMedian,
+  formatCurrency,
+  toDisplayAmount,
+} from '@/lib/utils';
 import type { SalaryRecord } from '@/types/salary';
 import { buildSalaryPageMeta } from '@/lib/seo';
 
@@ -188,11 +193,19 @@ export default async function SalariesPage({
   );
   const popularRoles = formatRoleList(getPopularRoles(SALARY_RECORDS));
 
-  // Stats
+  // Stats — normalize each record to display currency before aggregating
+  const displayAmounts = filtered.map((record) =>
+    toDisplayAmount(
+      record.total_compensation,
+      record.currency,
+      displayCurrency
+    )
+  );
+
   const medianTC =
     totalRecords > 0
       ? formatCurrency(
-          computeMedian(filtered.map((r) => r.total_compensation)),
+          computeMedian(displayAmounts),
           displayCurrency,
           displayCurrency,
           { compact: true }
@@ -202,12 +215,12 @@ export default async function SalariesPage({
   const salaryRange =
     totalRecords > 0
       ? `${formatCurrency(
-          Math.min(...filtered.map((r) => r.total_compensation)),
+          Math.min(...displayAmounts),
           displayCurrency,
           displayCurrency,
           { compact: true }
         )} – ${formatCurrency(
-          Math.max(...filtered.map((r) => r.total_compensation)),
+          Math.max(...displayAmounts),
           displayCurrency,
           displayCurrency,
           { compact: true }

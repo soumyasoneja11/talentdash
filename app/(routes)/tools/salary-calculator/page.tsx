@@ -9,63 +9,68 @@ import { formatCurrency } from '@/lib/utils';
 /*  Tax Calculations Math                                             */
 /* ------------------------------------------------------------------ */
 
-const computeNewRegimeTax = (taxable: number): number => {
-  if (taxable <= 700000) return 0; // 87A rebate applies (tax is zero if taxable income <= 7 Lakhs)
+const NEW_REGIME_REBATE_THRESHOLD = 1_200_000;
 
-  let tax = 0;
-  if (taxable <= 300000) {
-    tax = 0;
-  } else if (taxable <= 700000) {
-    tax = (taxable - 300000) * 0.05;
-  } else if (taxable <= 1000000) {
-    tax = 20000 + (taxable - 700000) * 0.10; // 20000 is 5% of (7L - 3L)
-  } else if (taxable <= 1200000) {
-    tax = 50000 + (taxable - 1000000) * 0.15; // 50000 is 20000 + 10% of (10L - 7L)
-  } else if (taxable <= 1500000) {
-    tax = 80000 + (taxable - 1200000) * 0.20; // 80000 is 50000 + 15% of (12L - 10L)
-  } else {
-    tax = 140000 + (taxable - 1500000) * 0.30; // 140000 is 80000 + 20% of (15L - 12L)
+const computeNewRegimeSlabTax = (taxable: number): number => {
+  if (taxable <= 400000) {
+    return 0;
   }
+  if (taxable <= 800000) {
+    return (taxable - 400000) * 0.05;
+  }
+  if (taxable <= 1200000) {
+    return 20000 + (taxable - 800000) * 0.1;
+  }
+  if (taxable <= 1600000) {
+    return 60000 + (taxable - 1200000) * 0.15;
+  }
+  if (taxable <= 2000000) {
+    return 120000 + (taxable - 1600000) * 0.2;
+  }
+  if (taxable <= 2400000) {
+    return 200000 + (taxable - 2000000) * 0.25;
+  }
+  return 300000 + (taxable - 2400000) * 0.3;
+};
 
-  // Surcharge
+const applySurchargeAndCess = (taxable: number, tax: number): number => {
   let surcharge = 0;
   if (taxable > 10000000) {
     surcharge = tax * 0.15;
   } else if (taxable > 5000000) {
-    surcharge = tax * 0.10;
+    surcharge = tax * 0.1;
   }
 
   const taxAfterSurcharge = tax + surcharge;
   const cess = taxAfterSurcharge * 0.04;
 
-  return taxAfterSurcharge + cess;
+  return Math.round(taxAfterSurcharge + cess);
+};
+
+const computeNewRegimeTax = (taxable: number): number => {
+  let tax = computeNewRegimeSlabTax(taxable);
+
+  if (taxable <= NEW_REGIME_REBATE_THRESHOLD) {
+    tax = 0;
+  } else {
+    const excess = taxable - NEW_REGIME_REBATE_THRESHOLD;
+    tax = Math.min(tax, excess);
+  }
+
+  return applySurchargeAndCess(taxable, tax);
 };
 
 const computeOldRegimeTax = (taxable: number): number => {
-  if (taxable <= 500000) return 0; // 87A rebate applies
+  if (taxable <= 500000) return 0;
 
   let tax = 0;
-  if (taxable <= 250000) {
-    tax = 0;
-  } else if (taxable <= 500000) {
-    tax = (taxable - 250000) * 0.05;
-  } else if (taxable <= 1000000) {
-    tax = 12500 + (taxable - 500000) * 0.20; // 12500 is 5% of (5L - 2.5L)
+  if (taxable <= 1000000) {
+    tax = 12500 + (taxable - 500000) * 0.2;
   } else {
-    tax = 112500 + (taxable - 1000000) * 0.30; // 112500 is 12500 + 20% of (10L - 5L)
+    tax = 112500 + (taxable - 1000000) * 0.3;
   }
 
-  let surcharge = 0;
-  if (taxable > 10000000) {
-    surcharge = tax * 0.15;
-  } else if (taxable > 5000000) {
-    surcharge = tax * 0.10;
-  }
-
-  const taxAfterSurcharge = tax + surcharge;
-  const cess = taxAfterSurcharge * 0.04;
-
-  return taxAfterSurcharge + cess;
+  return applySurchargeAndCess(taxable, tax);
 };
 
 /* ------------------------------------------------------------------ */
@@ -78,6 +83,7 @@ export default function SalaryCalculatorPage(): React.ReactElement {
   const [hraReceived, setHraReceived] = useState<number>(0);
   const [deductions80C, setDeductions80C] = useState<number>(150000);
   const [professionalTax, setProfessionalTax] = useState<number>(2400);
+  const [basicPercent, setBasicPercent] = useState<number>(40);
 
   // Real-time calculations
   const calculations = useMemo(() => {
@@ -94,13 +100,16 @@ export default function SalaryCalculatorPage(): React.ReactElement {
       ? computeNewRegimeTax(taxableIncome)
       : computeOldRegimeTax(taxableIncome);
 
-    // PF: simplified: ₹1,800/month = ₹21,600/year if CTC > 2.16L, else 12% of CTC/12 * 12
-    const pfEmployee = ctc > 216000 ? 21600 : ctc * 0.12;
+    const basicSalary = ctc * (basicPercent / 100);
+    const pfEmployee = Math.min(Math.round(basicSalary * 0.12), 21600);
 
     const netAnnualTakeHome = Math.max(0, ctc - annualTax - pfEmployee - (isNew ? 0 : profTax));
     const monthlyInhand = netAnnualTakeHome / 12;
 
     const effectiveTaxRate = ctc > 0 ? (annualTax / ctc) * 100 : 0;
+    const zeroTaxRebate =
+      (isNew && taxableIncome <= NEW_REGIME_REBATE_THRESHOLD) ||
+      (!isNew && taxableIncome <= 500000);
 
     return {
       standardDeduction,
@@ -109,11 +118,13 @@ export default function SalaryCalculatorPage(): React.ReactElement {
       taxableIncome,
       annualTax,
       pfEmployee,
+      basicSalary,
       netAnnualTakeHome,
       monthlyInhand,
       effectiveTaxRate,
+      zeroTaxRebate,
     };
-  }, [ctc, regime, hraReceived, deductions80C, professionalTax]);
+  }, [ctc, regime, hraReceived, deductions80C, professionalTax, basicPercent]);
 
   return (
     <div className="bg-app-bg min-h-screen py-8 font-sans">
@@ -291,9 +302,35 @@ export default function SalaryCalculatorPage(): React.ReactElement {
               </div>
             </div>
 
+            {/* Basic salary % for PF */}
+            <div>
+              <label
+                htmlFor="basic-percent-input"
+                className="block text-sm font-bold text-airbnb mb-1.5"
+              >
+                Basic Salary (% of CTC)
+              </label>
+              <input
+                id="basic-percent-input"
+                type="number"
+                min="0"
+                max="100"
+                value={basicPercent}
+                onChange={(e) =>
+                  setBasicPercent(
+                    Math.min(100, Math.max(0, Number(e.target.value)))
+                  )
+                }
+                className="w-full border border-border rounded-xl px-4 py-3 text-sm font-semibold text-airbnb bg-surface focus:border-coral focus:outline-none"
+              />
+              <span className="text-[10px] text-neutral mt-1 block select-none">
+                PF is estimated at 12% of basic, capped at ₹21,600/year (₹1,800/month).
+              </span>
+            </div>
+
             {/* Disclaimer */}
             <p className="text-[10px] text-neutral italic border-t border-border/60 pt-4 select-none">
-              Estimates based on FY 2024–25 tax rules. Does not account for perquisites, LTA, or complex deductions.
+              Estimates based on FY 2025–26 tax rules. Does not account for perquisites, LTA, or complex deductions.
             </p>
           </div>
 
@@ -307,7 +344,7 @@ export default function SalaryCalculatorPage(): React.ReactElement {
               <span className="text-4xl font-black text-airbnb block tracking-tight">
                 {formatCurrency(calculations.monthlyInhand, 'INR', 'INR')}
               </span>
-              {regime === 'new' && calculations.taxableIncome <= 700000 && (
+              {calculations.zeroTaxRebate && (
                 <span className="bg-green-50 text-success text-[10px] font-bold px-3 py-1 rounded-full border border-success/10 inline-flex items-center gap-1 select-none mt-2">
                   <i className="ti ti-shield-check text-xs" />
                   Zero Tax — 87A Rebate Applied

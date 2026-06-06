@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import type { Company } from '@/types/salary';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
+import { CompanyFollowButton } from '@/components/features/CompanyFollowButton';
 
 export interface CompanyHeaderProps {
   company: Company;
@@ -126,12 +127,10 @@ export const CompanyHeader = ({
             >
               Compare
             </Link>
-            <button
-              type="button"
-              className="inline-flex items-center justify-center rounded-lg border border-neutral/30 bg-surface px-4 py-2 text-sm font-bold text-airbnb transition hover:bg-hover cursor-pointer"
-            >
-              Follow
-            </button>
+            <CompanyFollowButton
+              companySlug={company.slug}
+              companyName={company.name}
+            />
           </div>
         </div>
       </div>
